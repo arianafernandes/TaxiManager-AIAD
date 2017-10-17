@@ -3,7 +3,7 @@ import jade.core.Profile;
 import jade.core.ProfileImpl; 
 import jade.wrapper.*; 
 
-public class agenciaDistribuicao {
+public class agenciaDistribuicao{
 
 	public static void main(String args[]) throws StaleProxyException {
 
@@ -20,10 +20,15 @@ public class agenciaDistribuicao {
 		//Object reference = new Object(); 
 		//Object args1[] = new Object[1]; 
 		 
-		AgentController taxiPorto = cc.createNewAgent("taxiPorto","Taxi", args);
-		AgentController taxiCaminha = cc.createNewAgent("taxiCaminha","Taxi", args);
+		AgentController central = cc.createNewAgent("central","Central", args);
+		
+		AgentController taxiPorto1 = cc.createNewAgent("taxiPorto","Taxi", args);
+		
+		AgentController client = cc.createNewAgent("client","Client", args);
 		// Fire up the agent and starts running the code
-		taxiPorto.start();
+		central.start();
+		taxiPorto1.start();
+		client.start();
 		
 	}
 	

@@ -46,7 +46,6 @@ public class PingPong extends Agent {
 
    }   // fim da classe PingPongBehaviour
 
-
    // método setup
    protected void setup() {
 	   

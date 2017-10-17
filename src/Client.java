@@ -3,13 +3,13 @@ import jade.core.behaviours.SimpleBehaviour;
 import jade.lang.acl.ACLMessage;
 
 @SuppressWarnings("serial")
-public class Taxi extends Agent{
+public class Client extends Agent {
 	
-	class TaxiBehaviour extends SimpleBehaviour {
+	class ClientBehaviour extends SimpleBehaviour {
 	      private int n = 0;
 
 	      // construtor do behaviour
-	      public TaxiBehaviour(Agent a) {
+	      public ClientBehaviour(Agent a) {
 	         super(a);
 	      }
 

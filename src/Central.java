@@ -3,13 +3,13 @@ import jade.core.behaviours.SimpleBehaviour;
 import jade.lang.acl.ACLMessage;
 
 @SuppressWarnings("serial")
-public class Taxi extends Agent{
+public class Central extends Agent{
 	
-	class TaxiBehaviour extends SimpleBehaviour {
+	class CentralBehaviour extends SimpleBehaviour {
 	      private int n = 0;
 
 	      // construtor do behaviour
-	      public TaxiBehaviour(Agent a) {
+	      public CentralBehaviour(Agent a) {
 	         super(a);
 	      }
 
@@ -29,9 +29,9 @@ public class Taxi extends Agent{
 	      public boolean done() {
 	         return n==10;
 	      }
-	   } 
-	
+	}   // fim da classe PingPongBehaviour
+ 
 	protected void setup() {
-		
+			
 	}
 }
