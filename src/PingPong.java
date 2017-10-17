@@ -81,7 +81,10 @@ public class PingPong extends Agent {
       // toma a iniciativa se for agente "pong"
       if(tipo.equals("pong")) {
          // pesquisa DF por agentes "ping"
+    	  //vai buscar todos aqueles que teem agente ping
+    	  //uma var que vai ter um conjunto de esp
          DFAgentDescription template = new DFAgentDescription();
+         //servico para dentro do template
          ServiceDescription sd1 = new ServiceDescription();
          sd1.setType("Agente ping");
          template.addServices(sd1);

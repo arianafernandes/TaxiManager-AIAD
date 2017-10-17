@@ -1,5 +1,9 @@
 import jade.core.*;
 import jade.core.behaviours.SimpleBehaviour;
+import jade.domain.DFService;
+import jade.domain.FIPAException;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 
 @SuppressWarnings("serial")
@@ -32,6 +36,33 @@ public class Client extends Agent {
 	   } 
 	
 	protected void setup() {
-		
+		// regista agente no DF
+	      DFAgentDescription dfd = new DFAgentDescription();
+	      dfd.setName(getAID());
+	      //descreve servico
+	      ServiceDescription sd = new ServiceDescription();
+	      sd.setName(getName());
+	      sd.setType("Cliente");
+	      dfd.addServices(sd);
+	      try {
+	         DFService.register(this, dfd);
+	      } catch(FIPAException e) {
+	         e.printStackTrace();
+	      }
+	      
+         DFAgentDescription template = new DFAgentDescription();
+         ServiceDescription sd1 = new ServiceDescription();
+         sd1.setType("Central");
+         template.addServices(sd1);
+         
+         try {
+            DFAgentDescription[] result = DFService.search(this, template);
+
+            ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+            for(int i=0; i<result.length; ++i)
+               msg.addReceiver(result[i].getName());
+            msg.setContent("Need a Taxi.");
+            send(msg);
+         } catch(FIPAException e) { e.printStackTrace(); }
 	}
 }

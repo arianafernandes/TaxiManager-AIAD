@@ -1,5 +1,9 @@
 import jade.core.*;
 import jade.core.behaviours.SimpleBehaviour;
+import jade.domain.DFService;
+import jade.domain.FIPAException;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 
 @SuppressWarnings("serial")
@@ -21,7 +25,7 @@ public class Central extends Agent{
 	         
 	         //se receber uma mensagem do tipo inform(de outro agente)
 	         if(msg.getPerformative() == ACLMessage.INFORM) {
-	     
+	        	System.out.println("Central: " + msg.getContent());
 	         }
 	      }
 
@@ -32,6 +36,21 @@ public class Central extends Agent{
 	}   // fim da classe PingPongBehaviour
  
 	protected void setup() {
-			
+		// regista agente no DF
+	      DFAgentDescription dfd = new DFAgentDescription();
+	      dfd.setName(getAID());
+	      //descreve servico
+	      ServiceDescription sd = new ServiceDescription();
+	      sd.setName(getName());
+	      sd.setType("Central");
+	      dfd.addServices(sd);
+	      try {
+	         DFService.register(this, dfd);
+	      } catch(FIPAException e) {
+	         e.printStackTrace();
+	      }
+	      
+	      CentralBehaviour b = new CentralBehaviour(this);
+	      addBehaviour(b);
 	}
 }
