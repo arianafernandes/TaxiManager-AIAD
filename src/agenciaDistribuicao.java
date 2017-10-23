@@ -24,11 +24,13 @@ public class agenciaDistribuicao{
 		
 		AgentController taxiPorto1 = cc.createNewAgent("taxiPorto","Taxi", args);
 		
-		AgentController client = cc.createNewAgent("client","Client", args);
+		AgentController clientIvo = cc.createNewAgent("clientIvo","Client", args);
+		AgentController clientTom = cc.createNewAgent("clientTom","Client", args);
 		// Fire up the agent and starts running the code
 		central.start();
 		taxiPorto1.start();
-		client.start();
+		clientIvo.start();
+		clientTom.start();
 		
 	}
 	

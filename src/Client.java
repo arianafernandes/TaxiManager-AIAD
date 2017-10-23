@@ -61,7 +61,10 @@ public class Client extends Agent {
             ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
             for(int i=0; i<result.length; ++i)
                msg.addReceiver(result[i].getName());
-            msg.setContent("Need a Taxi.");
+            
+            String agentName = getAID().getName();
+            msg.setContent( agentName + " - need a Taxi.");
+            System.out.println( agentName + " : Want a Taxi.");
             send(msg);
          } catch(FIPAException e) { e.printStackTrace(); }
 	}
