@@ -1,4 +1,5 @@
 package agents;
+import taxiManager.*;
 import jade.core.*;
 import jade.core.behaviours.SimpleBehaviour;
 import jade.domain.DFService;
