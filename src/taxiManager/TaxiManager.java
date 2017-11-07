@@ -1,9 +1,12 @@
-import jade.core.Runtime; 
-import jade.core.Profile; 
-import jade.core.ProfileImpl; 
-import jade.wrapper.*; 
+package taxiManager;
+import jade.core.Profile;
+import jade.core.ProfileImpl;
+import jade.core.Runtime;
+import jade.wrapper.AgentController;
+import jade.wrapper.ContainerController;
+import jade.wrapper.StaleProxyException;
 
-public class agenciaDistribuicao{
+public class TaxiManager{
 
 	public static void main(String args[]) throws StaleProxyException {
 
@@ -11,7 +14,7 @@ public class agenciaDistribuicao{
 		Runtime rt = Runtime.instance(); 
 		// Create a default profile    
 		Profile p = new ProfileImpl();     
-		p.setParameter(Profile.GUI, "true");
+		//p.setParameter(Profile.GUI, "true");
 		// Create a new non-main container, connecting to the default 
 		// main container (i.e. on this host, port 1099) 
 		ContainerController cc = rt.createMainContainer(p); 
@@ -19,20 +22,25 @@ public class agenciaDistribuicao{
 		// and pass it a reference to an Object 
 		//Object reference = new Object(); 
 		//Object args1[] = new Object[1]; 
-		 
-		AgentController central = cc.createNewAgent("central","Central", args);
 		
+				
+		AgentController central = cc.createNewAgent("central","Central", args);
 		AgentController taxiPorto1 = cc.createNewAgent("taxiPorto","Taxi", args);
 		
-		AgentController clientIvo = cc.createNewAgent("clientIvo","Client", args);
-		AgentController clientTom = cc.createNewAgent("clientTom","Client", args);
+		for( int i = 0; i < 6; i++){
+			AgentController clt = cc.createNewAgent("client"+i,"Client", args);
+			clt.start();
+		}
+		
+		AgentController snif = cc.createNewAgent("sniffer","jade.tools.sniffer.Sniffer",args); 
+		snif.start();
+		
+		
 		// Fire up the agent and starts running the code
 		central.start();
 		taxiPorto1.start();
-		clientIvo.start();
-		clientTom.start();
+
 		
 	}
-	
 	
 }

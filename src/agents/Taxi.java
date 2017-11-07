@@ -1,3 +1,4 @@
+package agents;
 import jade.core.*;
 import jade.core.behaviours.SimpleBehaviour;
 import jade.lang.acl.ACLMessage;
@@ -30,6 +31,26 @@ public class Taxi extends Agent{
 	         return n==10;
 	      }
 	   } 
+	
+	class SetPrice extends SimpleBehaviour {
+	      private int n = 0;
+
+	      // construtor do behaviour
+	      public SetPrice(Agent a) {
+	         super(a);
+	      }
+
+	      // método action
+	      public void action() {
+	    	  
+	      }
+
+		@Override
+		public boolean done() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+	}
 	
 	protected void setup() {
 		

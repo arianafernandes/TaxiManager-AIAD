@@ -1,3 +1,4 @@
+package agents;
 import jade.core.*;
 import jade.core.behaviours.SimpleBehaviour;
 import jade.domain.DFService;
@@ -9,11 +10,11 @@ import jade.lang.acl.ACLMessage;
 @SuppressWarnings("serial")
 public class Client extends Agent {
 	
-	class ClientBehaviour extends SimpleBehaviour {
+	class CallCentral extends SimpleBehaviour {
 	      private int n = 0;
 
 	      // construtor do behaviour
-	      public ClientBehaviour(Agent a) {
+	      public CallCentral(Agent a) {
 	         super(a);
 	      }
 
@@ -34,6 +35,7 @@ public class Client extends Agent {
 	         return n==10;
 	      }
 	   } 
+
 	
 	protected void setup() {
 		// regista agente no DF
@@ -62,7 +64,7 @@ public class Client extends Agent {
             for(int i=0; i<result.length; ++i)
                msg.addReceiver(result[i].getName());
             
-            String agentName = getAID().getName();
+            String agentName = getAID().getLocalName();
             msg.setContent( agentName + " - need a Taxi.");
             System.out.println( agentName + " : Want a Taxi.");
             send(msg);
