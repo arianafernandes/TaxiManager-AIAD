@@ -1,10 +1,12 @@
 package taxiManager;
+
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.core.Runtime;
 import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
+import agents.*;
 
 public class TaxiManager{
 
@@ -24,16 +26,16 @@ public class TaxiManager{
 		//Object args1[] = new Object[1]; 
 		
 				
-		AgentController central = cc.createNewAgent("central","Central", args);
-		AgentController taxiPorto1 = cc.createNewAgent("taxiPorto","Taxi", args);
+		AgentController central = cc.createNewAgent("central","agents.Central", args);
+		AgentController taxiPorto1 = cc.createNewAgent("taxiPorto","agents.Taxi", args);
 		
 		for( int i = 0; i < 6; i++){
-			AgentController clt = cc.createNewAgent("client"+i,"Client", args);
+			AgentController clt = cc.createNewAgent("client"+i,"agents.Client", args);
 			clt.start();
 		}
 		
-		AgentController snif = cc.createNewAgent("sniffer","jade.tools.sniffer.Sniffer",args); 
-		snif.start();
+		//AgentController snif = cc.createNewAgent("sniffer","jade.tools.sniffer.Sniffer",args); 
+		//snif.start();
 		
 		
 		// Fire up the agent and starts running the code

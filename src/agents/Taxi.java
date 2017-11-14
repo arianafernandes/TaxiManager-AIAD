@@ -1,5 +1,8 @@
 package agents;
+
 import jade.core.Agent;
+import taxiManager.*;
+import jade.core.*;
 import jade.core.behaviours.SimpleBehaviour;
 import jade.lang.acl.ACLMessage;
 
