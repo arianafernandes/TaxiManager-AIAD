@@ -1,4 +1,5 @@
 package agents;
+import jade.core.Agent;
 import jade.core.behaviours.SimpleBehaviour;
 import jade.lang.acl.ACLMessage;
 
