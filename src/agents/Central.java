@@ -1,13 +1,7 @@
-package agents;
+package src.agents;
 
+import sun.management.Agent;
 import taxiManager.*;
-import jade.core.*;
-import jade.core.behaviours.SimpleBehaviour;
-import jade.domain.DFService;
-import jade.domain.FIPAException;
-import jade.domain.FIPAAgentManagement.DFAgentDescription;
-import jade.domain.FIPAAgentManagement.ServiceDescription;
-import jade.lang.acl.ACLMessage;
 
 @SuppressWarnings("serial")
 public class Central extends Agent{
@@ -17,7 +11,7 @@ public class Central extends Agent{
 
 	      // construtor do behaviour
 	      public CentralBehaviour(Agent a) {
-	         super(a);
+	         super();
 	      }
 
 	      // método action
@@ -32,7 +26,12 @@ public class Central extends Agent{
 	         }
 	      }
 
-	      // método done
+	      private ACLMessage blockingReceive() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		// método done
 	      public boolean done() {
 	         return n==10;
 	      }
