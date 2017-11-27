@@ -1,3 +1,1 @@
-http://172.30.10.85:7778/acc
 http://ssla.fe.up.pt:7778/acc
-

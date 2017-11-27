@@ -2,10 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-<<<<<<< HEAD
-	<classpathentry kind="lib" path="C:/Users/Diogo/Downloads/JADE-all-4.5.0/JADE-bin-4.5.0/jade/lib/jade.jar"/>
-=======
-	<classpathentry kind="lib" path="C:/Users/arian/Downloads/JADE-all-4.5.0/JADE-all-4.5/jade/lib/jade.jar"/>
->>>>>>> f45f27bd64b6ae294f51dfb0afb23ef7449fb5df
+	<classpathentry kind="lib" path="C:/Users/arian/Documents/JADE-all-4.5.0/JADE-all-4.5/jade/lib/jade.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
