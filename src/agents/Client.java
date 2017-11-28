@@ -2,19 +2,24 @@ package agents;
 
 import jade.core.Agent;
 import jade.core.behaviours.SimpleBehaviour;
+import jade.domain.DFService;
+import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
-import jade.domain.introspection.ACLMessage;
+import jade.lang.acl.ACLMessage;
 
+
+@SuppressWarnings("serial")
 public class Client extends Agent {
 
+	/*
 	private int nClients;
 	private double cost = 0;
 	private String srcPoint;
 	private String dstPoint;
 
 	// Class constructor
-	/*public Client(int nClients, String srcPoint, String dstPoint) {
+	public Client(int nClients, String srcPoint, String dstPoint) {
 		this.nClients = nClients;
 		this.srcPoint = srcPoint;
 		this.dstPoint = dstPoint;
@@ -33,7 +38,7 @@ public class Client extends Agent {
 
 		// construtor do behaviour
 		public ClientBehaviour(Agent a) {
-			super();
+			super(a);
 		}
 
 		// método action
@@ -43,41 +48,50 @@ public class Client extends Agent {
 			ACLMessage msg = blockingReceive();
 
 			// se receber uma mensagem do tipo inform(de outro agente)
-			// if (msg.getPerformative() == ACLMessage.INFORM) {
+			if (msg.getPerformative() == ACLMessage.INFORM) {
 
-			// }
+			}
 		}
 
-		private ACLMessage blockingReceive() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
+		// método done
 		public boolean done() {
-			// TODO Auto-generated method stub
-			return false;
+			return n == 10;
 		}
 	}
-	
-	public boolean done(int n) {
-		return n == 10;
-	}
+
 	protected void setup() {
 		// regista agente no DF
 		DFAgentDescription dfd = new DFAgentDescription();
-		// dfd.setName(getAID());
+		dfd.setName(getAID());
 		// descreve servico
 		ServiceDescription sd = new ServiceDescription();
-		// sd.setName(getName());
+		sd.setName(getName());
 		sd.setType("Client");
 		dfd.addServices(sd);
-		ClientBehaviour b = new ClientBehaviour(this);
-		addBehaviour(b);
-	}
-	
-	private void addBehaviour(ClientBehaviour b) {
-		// TODO Auto-generated method stub
+		try {
+			DFService.register(this, dfd);
+		} catch (FIPAException e) {
+			e.printStackTrace();
+		}
 
+		DFAgentDescription template = new DFAgentDescription();
+		ServiceDescription sd1 = new ServiceDescription();
+		sd1.setType("Central");
+		template.addServices(sd1);
+
+		try {
+			DFAgentDescription[] result = DFService.search(this, template);
+
+			ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+			for (int i = 0; i < result.length; ++i)
+				msg.addReceiver(result[i].getName());
+
+			String agentName = getAID().getLocalName();
+			msg.setContent(agentName + " quer um Taxi.");
+			System.out.println(agentName + " : Quero um Taxi.");
+			send(msg);
+		} catch (FIPAException e) {
+			e.printStackTrace();
+		}
 	}
 }
