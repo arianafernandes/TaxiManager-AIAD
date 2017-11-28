@@ -11,7 +11,6 @@ import jade.lang.acl.ACLMessage;
 @SuppressWarnings("serial")
 public class Taxi extends Agent{
 	
-	private int passengers = 0;
 	
 	class TaxiBehaviour extends SimpleBehaviour {
 	      private int n = 0;

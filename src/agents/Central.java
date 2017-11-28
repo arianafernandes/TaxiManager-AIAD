@@ -1,6 +1,5 @@
 package agents;
 
-import taxiManager.*;
 import jade.core.*;
 import jade.core.behaviours.SimpleBehaviour;
 import jade.domain.DFService;
@@ -11,7 +10,22 @@ import jade.lang.acl.ACLMessage;
 
 @SuppressWarnings("serial")
 public class Central extends Agent{
+	/*private ArrayList<Taxi> companyTaxis = new ArrayList<Taxi>(); // companny taxis
+	private int Ntaxis = 10;
+	int clientsNumber = 0;
+
 	
+	// Creates passengers
+		public void addPassenger() {
+			Client cl = new Client(1);
+			try {
+				this.getContainerController().acceptNewAgent("Client" + clientsNumber++, cl).start();
+				System.out.println("Passenger" + clientsNumber + " created");
+			} catch (StaleProxyException e) {
+				e.printStackTrace();
+			}
+	}*/
+		
 	class CentralBehaviour extends SimpleBehaviour {
 	      private int n = 0;
 

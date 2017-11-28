@@ -11,27 +11,7 @@ import jade.lang.acl.ACLMessage;
 
 @SuppressWarnings("serial")
 public class Client extends Agent {
-
-	/*
-	private int nClients;
-	private double cost = 0;
-	private String srcPoint;
-	private String dstPoint;
-
-	// Class constructor
-	public Client(int nClients, String srcPoint, String dstPoint) {
-		this.nClients = nClients;
-		this.srcPoint = srcPoint;
-		this.dstPoint = dstPoint;
-	}
-
-	public String getSrcPoint() {
-		return srcPoint;
-	}
-
-	public String getDstPoint() {
-		return dstPoint;
-	}*/
+	
 
 	class ClientBehaviour extends SimpleBehaviour {
 		private int n = 0;
