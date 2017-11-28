@@ -1,5 +1,6 @@
 package taxiManager;
 
+import agents.Client;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.core.Runtime;
@@ -34,7 +35,7 @@ public class TaxiManager {
 			AgentController taxi = cc.createNewAgent("Taxi " + i, "agents.Taxi", args);
 			taxi.start();
 		}
-
+		
 		for (int i = 0; i < 2; i++) {
 			AgentController client = cc.createNewAgent("Cliente " + i, "agents.Client", args);
 			client.start();
