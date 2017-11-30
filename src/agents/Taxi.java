@@ -2,7 +2,6 @@ package agents;
 
 import java.util.Random;
 
-import agents.Client.ClientBehaviour;
 import jade.core.Agent;
 import jade.core.behaviours.SimpleBehaviour;
 import jade.domain.DFService;
@@ -36,8 +35,8 @@ public class Taxi extends Agent {
 
 			// se receber mensagem do tipo cfp (da central)
 			if (msg.getPerformative() == ACLMessage.CFP) {
-				System.out.println("Taxi a receber mensagem do tipo cfp da central");
-				System.out.println(msg.getContent());
+				//System.out.println("Taxi a receber mensagem do tipo cfp da central");
+				//System.out.println(msg.getContent());
 
 				DFAgentDescription template = new DFAgentDescription();
 				ServiceDescription sd1 = new ServiceDescription();

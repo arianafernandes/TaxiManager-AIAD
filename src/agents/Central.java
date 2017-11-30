@@ -33,7 +33,8 @@ public class Central extends Agent { // taxis
 
 			// se receber uma mensagem do tipo request(do cliente)
 			if (msg.getPerformative() == ACLMessage.REQUEST) {
-				System.out.println("Central recebe pedido request do cliente");
+				// System.out.println("Central recebe pedido request do
+				// cliente");
 
 				DFAgentDescription template = new DFAgentDescription();
 				ServiceDescription taxi = new ServiceDescription();
@@ -50,8 +51,9 @@ public class Central extends Agent { // taxis
 					for (int i = 0; i < result.length; ++i)
 						pedido.addReceiver(result[i].getName());
 					String agentName = getAID().getLocalName();
-					System.out.println("Central envia mensagem cfp para todos os taxis");
-					pedido.setContent(agentName + " -O Cliente quer um taxi.");
+					// System.out.println("Central envia mensagem cfp para todos
+					// os taxis");
+					pedido.setContent("O cliente quer um taxi.");
 					send(pedido);
 				} catch (FIPAException e) {
 					e.printStackTrace();
@@ -60,10 +62,10 @@ public class Central extends Agent { // taxis
 
 			// se receber uma mensagem do tipo propose(do taxi)
 			if (msg.getPerformative() == ACLMessage.PROPOSE) {
-				
+
 				// incrementa o contador do numero de taxis
 				countTaxis++;
-				
+
 				int x = Integer.parseInt(msg.getContent());
 				// se o tempo recebido pelo taxi for menor que o minimo tempo
 				// atual atualiza o melhor taxi para o serviço
@@ -73,36 +75,41 @@ public class Central extends Agent { // taxis
 				}
 				// se ja tiver percorrido todos os taxis
 				if (countTaxis == nTaxis) {
+					// o problema é aqui
 					DFAgentDescription template = new DFAgentDescription();
 					ServiceDescription taxi = new ServiceDescription();
-					taxi.setType("Client");
+					taxi.setType("Taxi");
 					template.addServices(taxi);
+					//alterando taxi e client uma das partes nao corre
 					try {
 						// procra todos os taxis
 						// result sao todos os taxis
 						DFAgentDescription[] result = DFService.search(myAgent, template);
 
-						// envia para os taxis com os piores tempos uma mensagem do tipo reject proposal
-						ACLMessage resposta = new ACLMessage(ACLMessage.REJECT_PROPOSAL);
-					
+						// envia para os taxis com os piores tempos uma mensagem
+						// do tipo reject proposal
+
 						for (int i = 0; i < result.length; ++i) {
-							// envia para o taxi com o melhor tempo uma mensagem do tipo accept proposal
-							if (result[i].getName() == taxiWinner) {
+							// envia para o taxi com o melhor tempo uma mensagem
+							// do tipo accept proposal
+							if (result[i].getName().equals(taxiWinner)) {
 								ACLMessage respostaW = new ACLMessage(ACLMessage.ACCEPT_PROPOSAL);
 								respostaW.addReceiver(result[i].getName());
 								String agentName = getAID().getLocalName();
-								System.out.println("Central envia resposta para o taxi que vai efectuar o serviço.");
-								respostaW.setContent(agentName + "Efectue o serviço.");
+								 System.out.println("Central envia resposta para o taxi que vai efectuar o serviço.");
+								respostaW.setContent("Efectue o serviço.");
 								send(respostaW);
+								 System.out.println(respostaW);
 							} else {
-								resposta.addReceiver(result[i].getName());
+								ACLMessage respostaL = new ACLMessage(ACLMessage.REJECT_PROPOSAL);
+								respostaL.addReceiver(result[i].getName());
+								String agentName = getAID().getLocalName();
+								 System.out.println("Central envia respostapara os taxis que nao vao efectuar o serviço.");
+								respostaL.setContent("Cliente esta atendido.");
+								send(respostaL);
+								 System.out.println(respostaL);
 							}
 						}
-						// efetua o pedido do cliente
-						String agentName = getAID().getLocalName();
-						System.out.println("Central envia resposta para os taxis que nao vao efectuar o serviço.");
-						resposta.setContent(agentName + "O cliente ja esta atendido, nao efectue o serviço.");
-						send(resposta);
 
 					} catch (FIPAException e) {
 						e.printStackTrace();
@@ -113,9 +120,7 @@ public class Central extends Agent { // taxis
 				// guarda o id do taxi com a melhor proposta
 				// responde aos taxis
 			}
-			System.out.println("RECEBE MENSAGEM PROPOSE dO TAXI");
 		}
-		
 
 		// método done
 		public boolean done() {

@@ -1,7 +1,8 @@
 package agents;
 
+
 import jade.core.Agent;
-import jade.core.behaviours.OneShotBehaviour;
+import jade.core.behaviours.SimpleBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
@@ -18,8 +19,9 @@ public class Client extends Agent {
 
 	// client behaviour é one shot behaviour pois o agent so tem um
 	// comportamento que é pedir o taxi
-	class ClientBehaviour extends OneShotBehaviour {
+	class ClientBehaviour extends SimpleBehaviour {
 		// construtor do behaviour
+		Agent myAgent;
 		public ClientBehaviour(Agent a) {
 			super(a);
 			DFAgentDescription template = new DFAgentDescription();
@@ -36,8 +38,8 @@ public class Client extends Agent {
 
 				String agentName = getAID().getLocalName();
 				msg.setContent(agentName + " quer um taxi.");
-				System.out.println("Pedido do cliente para a central");
-				System.out.println(agentName + " -quero um Taxi.");
+				//System.out.println("Pedido do cliente para a central");
+				//System.out.println(agentName + " -quero um Taxi.");
 				send(msg);
 			} catch (FIPAException e) {
 				e.printStackTrace();
@@ -46,19 +48,27 @@ public class Client extends Agent {
 
 		// método action
 		public void action() {
-
+			System.out.println("estou a espera");
+			
 			// ler a caixa de correio
 			ACLMessage msg = blockingReceive();
-
 			// se receber uma mensagem do tipo inform(da central)
-			if (msg.getPerformative() == ACLMessage.INFORM) {
+			if (msg.getPerformative() == ACLMessage.ACCEPT_PROPOSAL) {
 				System.out.println("Ok, obrigado.");
 			}
 			// ACLMessage.REFUSE
-			else {
-				System.out.println("Fica para a próxima.");
+			if (msg.getPerformative() == ACLMessage.REJECT_PROPOSAL) {
+				System.out.println("Fica para a proxima.");
 			}
+			System.out.println("acabou");
 		}
+
+		@Override
+		public boolean done() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+		
 	}
 
 	protected void setup() {
@@ -75,7 +85,7 @@ public class Client extends Agent {
 		} catch (FIPAException e) {
 			e.printStackTrace();
 		}
-
-		addBehaviour(new ClientBehaviour(this));
+		ClientBehaviour b = new ClientBehaviour(this);
+		addBehaviour(b);
 	}
 }
