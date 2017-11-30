@@ -1,5 +1,8 @@
 package agents;
 
+import java.util.Random;
+
+import agents.Client.ClientBehaviour;
 import jade.core.Agent;
 import jade.core.behaviours.SimpleBehaviour;
 import jade.domain.DFService;
@@ -9,35 +12,68 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 
 @SuppressWarnings("serial")
-public class Taxi extends Agent{
-	
-	
+public class Taxi extends Agent {
+
+	public Taxi() {
+
+	}
+
+	// client behaviour é simple behaviour
 	class TaxiBehaviour extends SimpleBehaviour {
-	      private int n = 0;
+		private int n = 0;
+		Agent myAgent;
 
-	      // construtor do behaviour
-	      public TaxiBehaviour(Agent a) {
-	         super(a);
-	      }
+		// construtor do behaviour
+		public TaxiBehaviour(Agent a) {
+			super(a);
+			myAgent = a;
+		}
 
-	      // método action
-	      public void action() {
-	    	  
-	    	  //ler a caixa de correio
-	         ACLMessage msg = blockingReceive();
-	         
-	         //se receber uma mensagem do tipo inform(de outro agente)
-	         if(msg.getPerformative() == ACLMessage.INFORM) {
-	     
-	         }
-	      }
+		// método action
+		public void action() {
+			// ler a caixa de correio
+			ACLMessage msg = blockingReceive();
 
-	      // método done
-	      public boolean done() {
-	         return n==10;
-	      }
-	   } 
-	
+			// se receber mensagem do tipo cfp (da central)
+			if (msg.getPerformative() == ACLMessage.CFP) {
+				System.out.println("Taxi a receber mensagem do tipo cfp da central");
+				System.out.println(msg.getContent());
+
+				DFAgentDescription template = new DFAgentDescription();
+				ServiceDescription sd1 = new ServiceDescription();
+				sd1.setType("Central");
+				template.addServices(sd1);
+
+				try {
+					DFAgentDescription[] result = DFService.search(myAgent, template);
+					// envia uma mensagem do tipo propose para a central
+					
+					ACLMessage proposta = new ACLMessage(ACLMessage.PROPOSE);
+					
+					for (int i = 0; i < result.length; ++i) {
+						proposta.addReceiver(result[i].getName());
+					}
+
+					String agentName = getAID().getLocalName();
+					// cria numero random para tempo do taxi de resposta
+					Random r = new Random();
+					int randint = Math.abs(r.nextInt()) % 11;
+					String x = Integer.toString(randint);
+					proposta.setContent(x);
+					send(proposta);
+				} catch (FIPAException e) {
+					e.printStackTrace();
+				}
+
+			}
+		}
+
+		// método done
+		public boolean done() {
+			return n == 10;
+		}
+	}
+
 	protected void setup() {
 		// regista agente no DF
 		DFAgentDescription dfd = new DFAgentDescription();
@@ -53,24 +89,6 @@ public class Taxi extends Agent{
 			e.printStackTrace();
 		}
 
-		DFAgentDescription template = new DFAgentDescription();
-		ServiceDescription sd1 = new ServiceDescription();
-		sd1.setType("Central");
-		template.addServices(sd1);
-
-		try {
-			DFAgentDescription[] result = DFService.search(this, template);
-
-			ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-			for (int i = 0; i < result.length; ++i)
-				msg.addReceiver(result[i].getName());
-
-			String agentName = getAID().getLocalName();
-			msg.setContent(agentName + ": pode ir.");
-			System.out.println(agentName + ": Estou disponivel.");
-			send(msg);
-		} catch (FIPAException e) {
-			e.printStackTrace();
-		}
+		addBehaviour(new TaxiBehaviour(this));
 	}
 }

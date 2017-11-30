@@ -16,28 +16,28 @@ public class Client extends Agent {
 	public Client() {
 	}
 
-	// waiting for taxi
+	// client behaviour é one shot behaviour pois o agent so tem um
+	// comportamento que é pedir o taxi
 	class ClientBehaviour extends OneShotBehaviour {
-		private int n = 0;
-
 		// construtor do behaviour
 		public ClientBehaviour(Agent a) {
-			// send request central
 			super(a);
 			DFAgentDescription template = new DFAgentDescription();
 			ServiceDescription sd1 = new ServiceDescription();
 			sd1.setType("Central");
 			template.addServices(sd1);
 			try {
+				// procura todos os agentes no df service
 				DFAgentDescription[] result = DFService.search(a, template);
-
+				// envia uma mensagem do tipo request para a central
 				ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
 				for (int i = 0; i < result.length; ++i)
 					msg.addReceiver(result[i].getName());
 
 				String agentName = getAID().getLocalName();
-				msg.setContent(agentName + " quer um Taxi.");
-				System.out.println(agentName + " : Quero um Taxi.");
+				msg.setContent(agentName + " quer um taxi.");
+				System.out.println("Pedido do cliente para a central");
+				System.out.println(agentName + " -quero um Taxi.");
 				send(msg);
 			} catch (FIPAException e) {
 				e.printStackTrace();
@@ -50,12 +50,12 @@ public class Client extends Agent {
 			// ler a caixa de correio
 			ACLMessage msg = blockingReceive();
 
-			// se receber uma mensagem do tipo inform(de outro agente)
+			// se receber uma mensagem do tipo inform(da central)
 			if (msg.getPerformative() == ACLMessage.INFORM) {
 				System.out.println("Ok, obrigado.");
 			}
-			//ACLMessage.REFUSE
-			else{
+			// ACLMessage.REFUSE
+			else {
 				System.out.println("Fica para a próxima.");
 			}
 		}

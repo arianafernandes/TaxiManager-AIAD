@@ -36,7 +36,7 @@ public class TaxiManager {
 			taxi.start();
 		}
 		
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 1; i++) {
 			AgentController client = cc.createNewAgent("Cliente " + i, "agents.Client", args);
 			client.start();
 		}
