@@ -31,13 +31,13 @@ public class TaxiManager {
 		AgentController central = cc.createNewAgent("Central", "agents.Central", args);
 		central.start();
 
-		for (int i = 0; i < 2; i++) {
-			AgentController taxi = cc.createNewAgent("Taxi " + i, "agents.Taxi", args);
+		for (int i = 0; i < 4; i++) {
+			AgentController taxi = cc.createNewAgent("Taxi" + i, "agents.Taxi", args);
 			taxi.start();
 		}
 		
 		for (int i = 0; i < 1; i++) {
-			AgentController client = cc.createNewAgent("Cliente " + i, "agents.Client", args);
+			AgentController client = cc.createNewAgent("Cliente" + i, "agents.Client", args);
 			client.start();
 		}
 	}

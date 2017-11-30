@@ -48,19 +48,9 @@ public class Client extends Agent {
 
 		// método action
 		public void action() {
-			System.out.println("estou a espera");
 			
-			// ler a caixa de correio
-			ACLMessage msg = blockingReceive();
-			// se receber uma mensagem do tipo inform(da central)
-			if (msg.getPerformative() == ACLMessage.ACCEPT_PROPOSAL) {
-				System.out.println("Ok, obrigado.");
-			}
-			// ACLMessage.REFUSE
-			if (msg.getPerformative() == ACLMessage.REJECT_PROPOSAL) {
-				System.out.println("Fica para a proxima.");
-			}
-			System.out.println("acabou");
+			
+			
 		}
 
 		@Override

@@ -33,8 +33,7 @@ public class Central extends Agent { // taxis
 
 			// se receber uma mensagem do tipo request(do cliente)
 			if (msg.getPerformative() == ACLMessage.REQUEST) {
-				// System.out.println("Central recebe pedido request do
-				// cliente");
+				// System.out.println("Central recebe pedido request do cliente");
 
 				DFAgentDescription template = new DFAgentDescription();
 				ServiceDescription taxi = new ServiceDescription();
@@ -48,13 +47,12 @@ public class Central extends Agent { // taxis
 					// envia uma mensagem do tipo cfp para todos os taxis
 					ACLMessage pedido = new ACLMessage(ACLMessage.CFP);
 					nTaxis = result.length;
-					for (int i = 0; i < result.length; ++i)
+					for (int i = 0; i < result.length; ++i){
 						pedido.addReceiver(result[i].getName());
-					String agentName = getAID().getLocalName();
-					// System.out.println("Central envia mensagem cfp para todos
-					// os taxis");
-					pedido.setContent("O cliente quer um taxi.");
+						pedido.setContent("Cliente quer um taxi.");
+					}
 					send(pedido);
+					System.out.println(pedido.getContent());
 				} catch (FIPAException e) {
 					e.printStackTrace();
 				}
@@ -80,7 +78,7 @@ public class Central extends Agent { // taxis
 					ServiceDescription taxi = new ServiceDescription();
 					taxi.setType("Taxi");
 					template.addServices(taxi);
-					//alterando taxi e client uma das partes nao corre
+					// alterando taxi e client uma das partes nao corre
 					try {
 						// procra todos os taxis
 						// result sao todos os taxis
@@ -92,22 +90,23 @@ public class Central extends Agent { // taxis
 						for (int i = 0; i < result.length; ++i) {
 							// envia para o taxi com o melhor tempo uma mensagem
 							// do tipo accept proposal
+
 							if (result[i].getName().equals(taxiWinner)) {
 								ACLMessage respostaW = new ACLMessage(ACLMessage.ACCEPT_PROPOSAL);
+								// System.out.println("taxi winner " +
+								// taxiWinner);
 								respostaW.addReceiver(result[i].getName());
 								String agentName = getAID().getLocalName();
-								 System.out.println("Central envia resposta para o taxi que vai efectuar o serviço.");
-								respostaW.setContent("Efectue o serviço.");
+								respostaW.setContent(result[i].getName().getName() + " efectue o serviço.");
 								send(respostaW);
-								 System.out.println(respostaW);
+								// System.out.println(respostaW);
 							} else {
 								ACLMessage respostaL = new ACLMessage(ACLMessage.REJECT_PROPOSAL);
 								respostaL.addReceiver(result[i].getName());
 								String agentName = getAID().getLocalName();
-								 System.out.println("Central envia respostapara os taxis que nao vao efectuar o serviço.");
-								respostaL.setContent("Cliente esta atendido.");
+								respostaL.setContent(result[i].getName().getName() + " não precisa de se deslocar. O cliente está atendido");
 								send(respostaL);
-								 System.out.println(respostaL);
+								// System.out.println(respostaL);
 							}
 						}
 

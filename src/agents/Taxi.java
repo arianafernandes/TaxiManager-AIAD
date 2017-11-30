@@ -35,8 +35,6 @@ public class Taxi extends Agent {
 
 			// se receber mensagem do tipo cfp (da central)
 			if (msg.getPerformative() == ACLMessage.CFP) {
-				//System.out.println("Taxi a receber mensagem do tipo cfp da central");
-				//System.out.println(msg.getContent());
 
 				DFAgentDescription template = new DFAgentDescription();
 				ServiceDescription sd1 = new ServiceDescription();
@@ -46,9 +44,9 @@ public class Taxi extends Agent {
 				try {
 					DFAgentDescription[] result = DFService.search(myAgent, template);
 					// envia uma mensagem do tipo propose para a central
-					
+
 					ACLMessage proposta = new ACLMessage(ACLMessage.PROPOSE);
-					
+
 					for (int i = 0; i < result.length; ++i) {
 						proposta.addReceiver(result[i].getName());
 					}
@@ -60,10 +58,26 @@ public class Taxi extends Agent {
 					String x = Integer.toString(randint);
 					proposta.setContent(x);
 					send(proposta);
+					
+					System.out.println(agentName + " estou a: " + proposta.getContent() + " minutos.");
 				} catch (FIPAException e) {
 					e.printStackTrace();
 				}
 
+			}
+
+			// se receber uma mensagem do tipo inform(da central)
+			if (msg.getPerformative() == ACLMessage.ACCEPT_PROPOSAL) {
+								
+				System.out.println("CENTRAL envia resposta para o taxi que vai efectuar o serviço.");
+				System.out.println(msg.getContent());
+				System.out.println("Ok, obrigado. Já vou efectuar o serviço." + "\n");
+			}
+			// ACLMessage.REFUSE
+			if (msg.getPerformative() == ACLMessage.REJECT_PROPOSAL) {
+				System.out.println("CENTRAL envia resposta para o taxi que nao vai efectuar o serviço.");
+				System.out.println(msg.getContent());
+				System.out.println("Ok Central, aguardo por novos clientes." + "\n");
 			}
 		}
 
