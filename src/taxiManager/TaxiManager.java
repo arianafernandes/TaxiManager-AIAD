@@ -1,6 +1,5 @@
 package taxiManager;
 
-import agents.Client;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.core.Runtime;
@@ -10,11 +9,6 @@ import jade.wrapper.StaleProxyException;
 
 public class TaxiManager {
 
-	////////////////////////
-	//
-	// MEMBER VARIABLES
-	//
-	////////////////////////
 	Profile p;
 	ContainerController cc;
 
@@ -28,14 +22,17 @@ public class TaxiManager {
 		// main container (i.e. on this host, port 1099)
 		ContainerController cc = rt.createMainContainer(p);
 
+		//Central initialization 
 		AgentController central = cc.createNewAgent("Central", "agents.Central", args);
 		central.start();
 
+		//Taxis initialization 
 		for (int i = 0; i < 4; i++) {
 			AgentController taxi = cc.createNewAgent("Taxi" + i, "agents.Taxi", args);
 			taxi.start();
 		}
 		
+		//Clients initialization 
 		for (int i = 0; i < 1; i++) {
 			AgentController client = cc.createNewAgent("Cliente" + i, "agents.Client", args);
 			client.start();

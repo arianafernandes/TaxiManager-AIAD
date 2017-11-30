@@ -59,25 +59,26 @@ public class Taxi extends Agent {
 					proposta.setContent(x);
 					send(proposta);
 					
-					System.out.println(agentName + " estou a: " + proposta.getContent() + " minutos.");
+					System.out.println(agentName + ": estou a " + proposta.getContent() + " minutos.");
 				} catch (FIPAException e) {
 					e.printStackTrace();
 				}
 
 			}
 
-			// se receber uma mensagem do tipo inform(da central)
+			// se receber uma mensagem do tipo proposal(da central)
+			//significa que é o taxi que vai efectuar o serviço
 			if (msg.getPerformative() == ACLMessage.ACCEPT_PROPOSAL) {
 								
-				System.out.println("CENTRAL envia resposta para o taxi que vai efectuar o serviço.");
-				System.out.println(msg.getContent());
-				System.out.println("Ok, obrigado. Já vou efectuar o serviço." + "\n");
+				//System.out.println("CENTRAL envia resposta para o taxi que vai efectuar o serviço.");
+				System.out.println(msg.getSender().getLocalName() + ": " + msg.getContent());
+				System.out.println(myAgent.getLocalName() + ": Ok, obrigado. Já vou efectuar o serviço." + "\n");
 			}
-			// ACLMessage.REFUSE
+			// se receber uma mensagem do tipo reject(da central)
+			//significa que é o taxi que nao vai efectuar o serviço
 			if (msg.getPerformative() == ACLMessage.REJECT_PROPOSAL) {
-				System.out.println("CENTRAL envia resposta para o taxi que nao vai efectuar o serviço.");
-				System.out.println(msg.getContent());
-				System.out.println("Ok Central, aguardo por novos clientes." + "\n");
+				System.out.println(msg.getSender().getLocalName() + ": " + msg.getContent());
+				System.out.println(myAgent.getLocalName() + ": Ok Central, aguardo por novos clientes." + "\n");
 			}
 		}
 

@@ -8,7 +8,7 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 
-//class central
+
 @SuppressWarnings("serial")
 public class Central extends Agent { // taxis
 
@@ -31,10 +31,9 @@ public class Central extends Agent { // taxis
 			// ler a caixa de correio
 			ACLMessage msg = blockingReceive();
 
+			//PEDIDO DO CLIENTE
 			// se receber uma mensagem do tipo request(do cliente)
-			if (msg.getPerformative() == ACLMessage.REQUEST) {
-				// System.out.println("Central recebe pedido request do cliente");
-
+			if (msg.getPerformative() == ACLMessage.REQUEST) {			
 				DFAgentDescription template = new DFAgentDescription();
 				ServiceDescription taxi = new ServiceDescription();
 				taxi.setType("Taxi");
@@ -49,15 +48,17 @@ public class Central extends Agent { // taxis
 					nTaxis = result.length;
 					for (int i = 0; i < result.length; ++i){
 						pedido.addReceiver(result[i].getName());
-						pedido.setContent("Cliente quer um taxi.");
 					}
+					System.out.println(myAgent.getLocalName() + ": O " + msg.getSender().getLocalName() + " quer um Taxi. Qual o vosso tempo?");
 					send(pedido);
-					System.out.println(pedido.getContent());
+					
+				//FALTA ENVIAR RESPOSTA AO CLIENTE
 				} catch (FIPAException e) {
 					e.printStackTrace();
 				}
 			}
 
+			//RESPOSTA DO TAXI
 			// se receber uma mensagem do tipo propose(do taxi)
 			if (msg.getPerformative() == ACLMessage.PROPOSE) {
 
@@ -91,22 +92,22 @@ public class Central extends Agent { // taxis
 							// envia para o taxi com o melhor tempo uma mensagem
 							// do tipo accept proposal
 
+							//SE O TAXI FOR O MELHOR TAXI PARA O SERVIÇO - MENOR TEMPO
 							if (result[i].getName().equals(taxiWinner)) {
 								ACLMessage respostaW = new ACLMessage(ACLMessage.ACCEPT_PROPOSAL);
 								// System.out.println("taxi winner " +
 								// taxiWinner);
 								respostaW.addReceiver(result[i].getName());
-								String agentName = getAID().getLocalName();
-								respostaW.setContent(result[i].getName().getName() + " efectue o serviço.");
+								respostaW.setContent(result[i].getName().getLocalName() + " efectue o serviço.");
 								send(respostaW);
 								// System.out.println(respostaW);
-							} else {
+							}
+							//SE O TAXI NAO FOR O MELHOR TAXI PARA O SERVIÇO - MAIORES TEMPOS
+							else {
 								ACLMessage respostaL = new ACLMessage(ACLMessage.REJECT_PROPOSAL);
 								respostaL.addReceiver(result[i].getName());
-								String agentName = getAID().getLocalName();
-								respostaL.setContent(result[i].getName().getName() + " não precisa de se deslocar. O cliente está atendido");
+								respostaL.setContent(result[i].getName().getLocalName() + " Não precisa de se deslocar. O cliente está atendido");
 								send(respostaL);
-								// System.out.println(respostaL);
 							}
 						}
 
@@ -114,10 +115,6 @@ public class Central extends Agent { // taxis
 						e.printStackTrace();
 					}
 				}
-
-				// recebe a resposta de cada um dos taxis
-				// guarda o id do taxi com a melhor proposta
-				// responde aos taxis
 			}
 		}
 

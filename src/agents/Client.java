@@ -1,8 +1,7 @@
 package agents;
 
-
 import jade.core.Agent;
-import jade.core.behaviours.SimpleBehaviour;
+import jade.core.behaviours.OneShotBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
@@ -12,16 +11,17 @@ import jade.lang.acl.ACLMessage;
 @SuppressWarnings("serial")
 public class Client extends Agent {
 
-	int clientN;
+	int clientN = 3;
 
 	public Client() {
 	}
 
 	// client behaviour é one shot behaviour pois o agent so tem um
 	// comportamento que é pedir o taxi
-	class ClientBehaviour extends SimpleBehaviour {
+	class ClientBehaviour extends OneShotBehaviour {
 		// construtor do behaviour
 		Agent myAgent;
+
 		public ClientBehaviour(Agent a) {
 			super(a);
 			DFAgentDescription template = new DFAgentDescription();
@@ -36,10 +36,10 @@ public class Client extends Agent {
 				for (int i = 0; i < result.length; ++i)
 					msg.addReceiver(result[i].getName());
 
-				String agentName = getAID().getLocalName();
-				msg.setContent(agentName + " quer um taxi.");
-				//System.out.println("Pedido do cliente para a central");
-				//System.out.println(agentName + " -quero um Taxi.");
+				// String agentName = getAID().getLocalName();
+				msg.setContent(a.getLocalName() + ": Quero um taxi.");
+				// System.out.println("Pedido do cliente para a central");
+				System.out.println(msg.getContent());
 				send(msg);
 			} catch (FIPAException e) {
 				e.printStackTrace();
@@ -48,20 +48,12 @@ public class Client extends Agent {
 
 		// método action
 		public void action() {
-			
-			
-			
-		}
 
-		@Override
-		public boolean done() {
-			// TODO Auto-generated method stub
-			return false;
 		}
-		
 	}
 
 	protected void setup() {
+
 		// regista agente no DF
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());
@@ -77,5 +69,6 @@ public class Client extends Agent {
 		}
 		ClientBehaviour b = new ClientBehaviour(this);
 		addBehaviour(b);
+
 	}
 }
