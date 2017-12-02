@@ -11,8 +11,7 @@ import jade.lang.acl.ACLMessage;
 @SuppressWarnings("serial")
 public class Client extends Agent {
 
-	int clientN = 3;
-
+	
 	public Client() {
 	}
 
@@ -55,8 +54,9 @@ public class Client extends Agent {
 			// se receber mensagem do tipo cfp (da central)
 			if (msg.getPerformative() == ACLMessage.INFORM) {
 				System.out.println(myAgent.getLocalName() + ": Obrigado CENTRAL, fico à espera do " + msg.getContent() +".");
-			} else{
-				System.out.println(myAgent.getLocalName() + ": Quando tiver Taxis, avise-me. Obrigado.");
+			}
+			if (msg.getPerformative() == ACLMessage.REFUSE) {
+				System.out.println(myAgent.getLocalName() + ": OK. Obrigado.");
 			}
 		}
 	}

@@ -19,6 +19,7 @@ public class Central extends Agent { // taxis
 		int countTaxis = 0;
 		Agent myAgent;
 		AID clientInform;
+		int NClients;
 
 		// construtor do behaviour
 		public CentralBehaviour(Agent a) {
@@ -51,7 +52,8 @@ public class Central extends Agent { // taxis
 					for (int i = 0; i < result.length; ++i){
 						pedido.addReceiver(result[i].getName());
 					}
-					System.out.println(myAgent.getLocalName() + ": O " + msg.getSender().getLocalName() + " quer um Taxi. Qual o vosso tempo?");
+					System.out.println(myAgent.getLocalName() + ": O " + msg.getSender().getLocalName() + " quer um Taxi. Taxis qual o vosso tempo? \n");
+					System.out.println("A aguardar resposta dos taxis...");
 					clientInform = msg.getSender();
 					send(pedido);
 					
@@ -129,6 +131,13 @@ public class Central extends Agent { // taxis
 						e.printStackTrace();
 					}
 				}
+			}
+			else{
+				ACLMessage inform = new ACLMessage(ACLMessage.REFUSE);
+				inform.setContent(myAgent.getLocalName() + ": Atualmente não há taxis. Efetue novo pedido dentro de minutos.\n");
+				System.out.println(inform.getContent());
+				inform.addReceiver(clientInform);
+				send(inform);
 			}
 		}
 
