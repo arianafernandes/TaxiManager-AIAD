@@ -10,17 +10,24 @@ import jade.lang.acl.ACLMessage;
 
 
 @SuppressWarnings("serial")
-public class Central extends Agent { // taxis
-
+public class Central extends Agent { //taxis
+	
+	public int nTotalTaxis;
+	
+	public Central(){
+		this.nTotalTaxis = 1;
+	}
+	
 	class CentralBehaviour extends SimpleBehaviour {
 		int nTaxis = 0;
 		int min = 50;
 		AID taxiWinner;
+		Agent taxiW;
 		int countTaxis = 0;
 		Agent myAgent;
 		AID clientInform;
 		int NClients;
-
+		
 		// construtor do behaviour
 		public CentralBehaviour(Agent a) {
 			super(a);
@@ -36,46 +43,56 @@ public class Central extends Agent { // taxis
 			//PEDIDO DO CLIENTE
 			// se receber uma mensagem do tipo request(do cliente)
 			if (msg.getPerformative() == ACLMessage.REQUEST) {			
-				DFAgentDescription template = new DFAgentDescription();
-				ServiceDescription taxi = new ServiceDescription();
-				taxi.setType("Taxi");
-				template.addServices(taxi);
-				try {
-					// procra todos os taxis
-					// result sao todos os taxis
-					DFAgentDescription[] result = DFService.search(myAgent, template);
+				
+				if(nTotalTaxis != 0){
+					DFAgentDescription template = new DFAgentDescription();
+					ServiceDescription taxi = new ServiceDescription();
+					taxi.setType("Taxi");
+					template.addServices(taxi);
 					
-					//ENVIA MENSAGENS AOS TAXIS
-					// envia uma mensagem do tipo cfp para todos os taxis
-					ACLMessage pedido = new ACLMessage(ACLMessage.CFP);
-					nTaxis = result.length;
-					for (int i = 0; i < result.length; ++i){
-						pedido.addReceiver(result[i].getName());
+					try {
+						// procra todos os taxis
+						// result sao todos os taxis
+						DFAgentDescription[] result = DFService.search(myAgent, template);
+						
+						//ENVIA MENSAGENS AOS TAXIS
+						// envia uma mensagem do tipo cfp para todos os taxis
+						ACLMessage pedido = new ACLMessage(ACLMessage.CFP);
+						nTaxis = result.length;
+						for (int i = 0; i < result.length; ++i){
+							pedido.addReceiver(result[i].getName());
+						}
+						System.out.println(myAgent.getLocalName() + ": O " + msg.getSender().getLocalName() + " quer um Taxi. Taxis qual o vosso tempo? \n");
+						System.out.println("A aguardar resposta dos taxis...");
+						clientInform = msg.getSender();
+						send(pedido);
+						
+					} catch (FIPAException e) {
+						e.printStackTrace();
 					}
-					System.out.println(myAgent.getLocalName() + ": O " + msg.getSender().getLocalName() + " quer um Taxi. Taxis qual o vosso tempo? \n");
-					System.out.println("A aguardar resposta dos taxis...");
-					clientInform = msg.getSender();
-					send(pedido);
-					
-				} catch (FIPAException e) {
-					e.printStackTrace();
+				} else{
+					System.out.println( myAgent.getLocalName() + ": Desculpe, atualmente não há Taxis.");
 				}
+				
 			}
 
 			//RESPOSTA DO TAXI
 			// se receber uma mensagem do tipo propose(do taxi)
 			if (msg.getPerformative() == ACLMessage.PROPOSE) {
-
+				
+				//((Taxi) myAgent).move((Location) ((Taxi) myAgent).getPath().get(0).getTarget());
+				
 				// incrementa o contador do numero de taxis
 				countTaxis++;
-
 				int x = Integer.parseInt(msg.getContent());
 				// se o tempo recebido pelo taxi for menor que o minimo tempo
 				// atual atualiza o melhor taxi para o serviço
-				if (x < min) {
+				
+				if (x < min ) {
 					min = x;
 					taxiWinner = msg.getSender();
 				}
+				
 				// se ja tiver percorrido todos os taxis
 				if (countTaxis == nTaxis) {
 					// o problema é aqui
@@ -103,6 +120,7 @@ public class Central extends Agent { // taxis
 								// taxiWinner);
 								respostaW.addReceiver(result[i].getName());
 								respostaW.setContent(result[i].getName().getLocalName() + " efectue o serviço.");
+								
 								send(respostaW);
 								
 								//Avisa o cliente que o taxi esta a caminho
@@ -132,13 +150,13 @@ public class Central extends Agent { // taxis
 					}
 				}
 			}
-			else{
+			/*else{
 				ACLMessage inform = new ACLMessage(ACLMessage.REFUSE);
 				inform.setContent(myAgent.getLocalName() + ": Atualmente não há taxis. Efetue novo pedido dentro de minutos.\n");
 				System.out.println(inform.getContent());
 				inform.addReceiver(clientInform);
 				send(inform);
-			}
+			}*/
 		}
 
 		// método done

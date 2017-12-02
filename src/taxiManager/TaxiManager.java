@@ -26,28 +26,27 @@ public class TaxiManager {
 		Runtime rt = Runtime.instance();
 		Profile p = new ProfileImpl();
 		cc = rt.createMainContainer(p);
-		
+		buildMap();
+	}
+	
+	public static void buildMap() throws StaleProxyException{
 		centralAgent();
+		taxiAgent(1);
+		clientAgent(1);
 	}
 		
 	public static void centralAgent() throws StaleProxyException{
-		//Central initialization 
+		//Central initialization
 		central = cc.createNewAgent("Central", "agents.Central", null);
 		central.start();
-		
-		//Central cria Taxi e Clientes
-		int numberTaxis = 3;
-		int numberClients = 1;
-		taxiAgent(numberTaxis);
-		clientAgent(numberClients);
 	}
 	
 	public static void taxiAgent(int numberTaxis) throws StaleProxyException{
 		//Taxis initialization 
-		//for (int i = 1; i <= 1; i++) {
-			//AgentController taxi = cc.createNewAgent("Taxi" + i, "agents.Taxi",null);
-			//taxi.start();
-		//}
+		for (int i = 1; i <= numberTaxis; i++) {
+			AgentController taxi = cc.createNewAgent("Taxi" + i, "agents.Taxi",null);
+			taxi.start();
+		}
 	}
 	
 	public static void clientAgent(int numberClients) throws StaleProxyException{

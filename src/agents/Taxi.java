@@ -12,11 +12,19 @@ import jade.lang.acl.ACLMessage;
 
 @SuppressWarnings("serial")
 public class Taxi extends Agent {
-
+	
+	public boolean available;
+	public int capacity;
+	
 	public Taxi() {
-
+		this.available = true;
+		this.capacity = 2;
 	}
-
+	
+	public boolean getAva(){
+		return available;
+	}
+	
 	// client behaviour é simple behaviour
 	class TaxiBehaviour extends SimpleBehaviour {
 		private int n = 0;
@@ -71,6 +79,7 @@ public class Taxi extends Agent {
 			 * significa que é o taxi que vai efectuar o serviço */
 			if (msg.getPerformative() == ACLMessage.ACCEPT_PROPOSAL) {			
 				//System.out.println("CENTRAL envia resposta para o taxi que vai efectuar o serviço.");
+				available = false;
 				System.out.println(msg.getSender().getLocalName() + ": " + msg.getContent());
 				System.out.println(myAgent.getLocalName() + ": Ok, obrigado. Já vou efectuar o serviço." + "\n");
 			}
