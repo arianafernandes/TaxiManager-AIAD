@@ -65,11 +65,11 @@ public class Taxi extends Agent {
 				}
 
 			}
-
-			// se receber uma mensagem do tipo proposal(da central)
-			//significa que é o taxi que vai efectuar o serviço
-			if (msg.getPerformative() == ACLMessage.ACCEPT_PROPOSAL) {
-								
+			
+			/* RECEBE MENSAGEM CENTRAL
+			 * se receber uma mensagem do tipo proposal(da central)
+			 * significa que é o taxi que vai efectuar o serviço */
+			if (msg.getPerformative() == ACLMessage.ACCEPT_PROPOSAL) {			
 				//System.out.println("CENTRAL envia resposta para o taxi que vai efectuar o serviço.");
 				System.out.println(msg.getSender().getLocalName() + ": " + msg.getContent());
 				System.out.println(myAgent.getLocalName() + ": Ok, obrigado. Já vou efectuar o serviço." + "\n");

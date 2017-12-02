@@ -1,5 +1,7 @@
 package agents;
 
+import java.io.IOException;
+
 import jade.core.*;
 import jade.core.behaviours.SimpleBehaviour;
 import jade.domain.DFService;
@@ -18,6 +20,7 @@ public class Central extends Agent { // taxis
 		AID taxiWinner;
 		int countTaxis = 0;
 		Agent myAgent;
+		AID clientInform;
 
 		// construtor do behaviour
 		public CentralBehaviour(Agent a) {
@@ -42,7 +45,8 @@ public class Central extends Agent { // taxis
 					// procra todos os taxis
 					// result sao todos os taxis
 					DFAgentDescription[] result = DFService.search(myAgent, template);
-
+					
+					//ENVIA MENSAGENS AOS TAXIS
 					// envia uma mensagem do tipo cfp para todos os taxis
 					ACLMessage pedido = new ACLMessage(ACLMessage.CFP);
 					nTaxis = result.length;
@@ -50,9 +54,9 @@ public class Central extends Agent { // taxis
 						pedido.addReceiver(result[i].getName());
 					}
 					System.out.println(myAgent.getLocalName() + ": O " + msg.getSender().getLocalName() + " quer um Taxi. Qual o vosso tempo?");
+					clientInform = msg.getSender();
 					send(pedido);
 					
-				//FALTA ENVIAR RESPOSTA AO CLIENTE
 				} catch (FIPAException e) {
 					e.printStackTrace();
 				}
@@ -100,7 +104,22 @@ public class Central extends Agent { // taxis
 								respostaW.addReceiver(result[i].getName());
 								respostaW.setContent(result[i].getName().getLocalName() + " efectue o serviço.");
 								send(respostaW);
-								// System.out.println(respostaW);
+								
+								
+								/*#######################################
+								  ###          AVISAR CLIENTE         ###
+								  #######################################*/
+								ServiceDescription tellCliente = new ServiceDescription();
+								taxi.setType("Client");
+								template.addServices(tellCliente);
+								
+								ACLMessage inform = new ACLMessage(ACLMessage.INFORM);
+								String taxiResponsavel = result[i].getName().getLocalName();
+								inform.setContent(taxiResponsavel);
+								inform.addReceiver(clientInform);
+								//System.out.println(inform);
+								send(inform);
+								
 							}
 							//SE O TAXI NAO FOR O MELHOR TAXI PARA O SERVIÇO - MAIORES TEMPOS
 							else {
