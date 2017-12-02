@@ -53,7 +53,7 @@ public class Client extends Agent {
 
 			// se receber mensagem do tipo cfp (da central)
 			if (msg.getPerformative() == ACLMessage.INFORM) {
-				System.out.println("[CLIENT]: Obrigado CENTRAL, fico à espera pelo " + msg.getContent());
+				System.out.println("[CLIENT]: Obrigado CENTRAL, fico à espera do " + msg.getContent());
 			} else{
 				System.out.println("[CLIENT]: Quando tiver Taxis, avise-me. Obrigado.");
 			}
