@@ -61,9 +61,10 @@ public class Central extends Agent { //taxis
 						for (int i = 0; i < result.length; ++i){
 							pedido.addReceiver(result[i].getName());
 						}
-						System.out.println(myAgent.getLocalName() + ": O " + msg.getSender().getLocalName() + " quer um Taxi. Taxis qual o vosso tempo? \n");
+						System.out.println(myAgent.getLocalName() + ": O " + msg.getSender().getLocalName() + " quer um Taxi. Taxis qual o vosso tempo? ");
 						System.out.println("A aguardar resposta dos taxis...");
 						clientInform = msg.getSender();
+						pedido.setContent(msg.getSender().getLocalName());
 						send(pedido);
 						
 					} catch (FIPAException e) {
@@ -83,7 +84,12 @@ public class Central extends Agent { //taxis
 				
 				// incrementa o contador do numero de taxis
 				countTaxis++;
-				int x = Integer.parseInt(msg.getContent());
+				String[] parts = msg.getContent().split(",");
+				String time = parts[0]; // 004
+				String available = parts[1]; // 034556
+				//System.out.println("TIME: " + time + " AVAILABLE: " + available );
+				
+				int x = Integer.parseInt(time);
 				// se o tempo recebido pelo taxi for menor que o minimo tempo
 				// atual atualiza o melhor taxi para o serviço
 				

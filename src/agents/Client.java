@@ -52,11 +52,10 @@ public class Client extends Agent {
 			ACLMessage msg = blockingReceive();
 
 			// se receber mensagem do tipo cfp (da central)
-			if (msg.getPerformative() == ACLMessage.INFORM) {
+			if (msg.getPerformative() == ACLMessage.INFORM){
 				System.out.println(myAgent.getLocalName() + ": Obrigado CENTRAL, fico à espera do " + msg.getContent() +".");
-			}
-			if (msg.getPerformative() == ACLMessage.REFUSE) {
-				System.out.println(myAgent.getLocalName() + ": OK. Obrigado.");
+			} else{
+				System.out.println(myAgent.getLocalName() + ": OK. Depois faço pedido.");
 			}
 		}
 	}

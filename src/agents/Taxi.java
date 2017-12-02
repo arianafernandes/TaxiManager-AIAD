@@ -1,5 +1,6 @@
 package agents;
 
+import java.io.IOException;
 import java.util.Random;
 
 import jade.core.Agent;
@@ -13,15 +14,15 @@ import jade.lang.acl.ACLMessage;
 @SuppressWarnings("serial")
 public class Taxi extends Agent {
 	
-	public boolean available;
+	public int available;
 	public int capacity;
 	
 	public Taxi() {
-		this.available = true;
+		this.available = 1;
 		this.capacity = 2;
 	}
 	
-	public boolean getAva(){
+	public int getAva(){
 		return available;
 	}
 	
@@ -64,10 +65,12 @@ public class Taxi extends Agent {
 					Random r = new Random();
 					int randint = Math.abs(r.nextInt()) % 11;
 					String x = Integer.toString(randint);
-					proposta.setContent(x);
+					String a = Integer.toString(available);
+					String args = x + "," + a; 
+					proposta.setContent(args);
 					send(proposta);
 					
-					System.out.println(agentName + ": estou a " + proposta.getContent() + " minutos.");
+					System.out.println(agentName + ": estou a " + x + " minutos do " + msg.getContent() );
 				} catch (FIPAException e) {
 					e.printStackTrace();
 				}
@@ -79,9 +82,9 @@ public class Taxi extends Agent {
 			 * significa que é o taxi que vai efectuar o serviço */
 			if (msg.getPerformative() == ACLMessage.ACCEPT_PROPOSAL) {			
 				//System.out.println("CENTRAL envia resposta para o taxi que vai efectuar o serviço.");
-				available = false;
+				available = 0;
 				System.out.println(msg.getSender().getLocalName() + ": " + msg.getContent());
-				System.out.println(myAgent.getLocalName() + ": Ok, obrigado. Já vou efectuar o serviço." + "\n");
+				System.out.println(myAgent.getLocalName() + ": Ok, obrigado. Já vou efectuar o serviço.");
 			}
 			// se receber uma mensagem do tipo reject(da central)
 			//significa que é o taxi que nao vai efectuar o serviço

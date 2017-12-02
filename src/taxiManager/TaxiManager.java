@@ -32,7 +32,7 @@ public class TaxiManager {
 	
 	public static void buildMap() throws StaleProxyException{	
 		int NUMBER_TAXIS 	= 1;
-		int NUMBER_CLIENTS 	= 2;
+		int NUMBER_CLIENTS 	= 3;
 		
 		centralAgent(NUMBER_TAXIS);
 		taxiAgent(NUMBER_TAXIS);
