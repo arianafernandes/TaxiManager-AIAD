@@ -1,5 +1,6 @@
 package taxiManager;
 
+import java.lang.Object;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.core.Runtime;
@@ -29,15 +30,20 @@ public class TaxiManager {
 		buildMap();
 	}
 	
-	public static void buildMap() throws StaleProxyException{
-		centralAgent();
-		taxiAgent(1);
-		clientAgent(1);
-	}
+	public static void buildMap() throws StaleProxyException{	
+		int NUMBER_TAXIS 	= 1;
+		int NUMBER_CLIENTS 	= 2;
 		
-	public static void centralAgent() throws StaleProxyException{
+		centralAgent(NUMBER_TAXIS);
+		taxiAgent(NUMBER_TAXIS);
+		clientAgent(NUMBER_CLIENTS);
+	}
+
+	public static void centralAgent(int numberTaxis) throws StaleProxyException{
 		//Central initialization
-		central = cc.createNewAgent("Central", "agents.Central", null);
+		String args[] = new String[1];
+	    args[0] = Integer.toString(numberTaxis);
+		central = cc.createNewAgent("Central", "agents.Central", args);
 		central.start();
 	}
 	

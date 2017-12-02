@@ -15,7 +15,6 @@ public class Central extends Agent { //taxis
 	public int nTotalTaxis;
 	
 	public Central(){
-		this.nTotalTaxis = 1;
 	}
 	
 	class CentralBehaviour extends SimpleBehaviour {
@@ -166,6 +165,12 @@ public class Central extends Agent { //taxis
 	}
 
 	protected void setup() {
+		Object[] args = getArguments();
+        if (args != null) {
+            // Extracting the integer.
+        	this.nTotalTaxis = Integer.parseInt( (String) args[0] );     
+        }
+
 		// regista agente no DF
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());
