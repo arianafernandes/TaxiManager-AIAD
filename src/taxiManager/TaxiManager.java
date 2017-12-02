@@ -56,7 +56,7 @@ public class TaxiManager {
 	
 	public static void taxiAgent(int numberTaxis) throws StaleProxyException{
 		//Taxis initialization 
-		for (int i = 0; i < numberTaxis; i++) {
+		for (int i = 1; i <= numberTaxis; i++) {
 			AgentController taxi = cc.createNewAgent("Taxi" + i, "agents.Taxi",null);
 			taxi.start();
 		}
@@ -64,7 +64,7 @@ public class TaxiManager {
 	
 	public static void clientAgent() throws StaleProxyException{
 		//Clients initialization 
-		for (int i = 0; i < 1; i++) {
+		for (int i = 1; i <= 3; i++) {
 			AgentController client = cc.createNewAgent("Cliente" + i, "agents.Client", null);
 			client.start();
 		}

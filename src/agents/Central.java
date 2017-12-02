@@ -1,7 +1,5 @@
 package agents;
 
-import java.io.IOException;
-
 import jade.core.*;
 import jade.core.behaviours.SimpleBehaviour;
 import jade.domain.DFService;
@@ -105,10 +103,7 @@ public class Central extends Agent { // taxis
 								respostaW.setContent(result[i].getName().getLocalName() + " efectue o serviço.");
 								send(respostaW);
 								
-								
-								/*#######################################
-								  ###          AVISAR CLIENTE         ###
-								  #######################################*/
+								//Avisa o cliente que o taxi esta a caminho
 								ServiceDescription tellCliente = new ServiceDescription();
 								taxi.setType("Client");
 								template.addServices(tellCliente);
@@ -125,7 +120,7 @@ public class Central extends Agent { // taxis
 							else {
 								ACLMessage respostaL = new ACLMessage(ACLMessage.REJECT_PROPOSAL);
 								respostaL.addReceiver(result[i].getName());
-								respostaL.setContent(result[i].getName().getLocalName() + " Não precisa de se deslocar. O cliente está atendido");
+								respostaL.setContent(result[i].getName().getLocalName() + " Não precisa de se deslocar. O cliente está atendido.");
 								send(respostaL);
 							}
 						}
