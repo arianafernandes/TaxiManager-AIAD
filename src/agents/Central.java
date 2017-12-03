@@ -13,6 +13,7 @@ import jade.lang.acl.ACLMessage;
 public class Central extends Agent { //taxis
 	
 	public int nTotalTaxis;
+	public Agent[] allAgents;
 	
 	public Central(){
 	}
@@ -22,7 +23,6 @@ public class Central extends Agent { //taxis
 		int min = 50;
 		AID taxiWinner;
 		Agent taxiW;
-		int countTaxis = 0;
 		Agent myAgent;
 		AID clientInform;
 		int NClients;
@@ -38,7 +38,8 @@ public class Central extends Agent { //taxis
 
 			// ler a caixa de correio
 			ACLMessage msg = blockingReceive();
-
+			int countTaxis = 0;
+			
 			//PEDIDO DO CLIENTE
 			// se receber uma mensagem do tipo request(do cliente)
 			if (msg.getPerformative() == ACLMessage.REQUEST) {			
@@ -154,6 +155,16 @@ public class Central extends Agent { //taxis
 						e.printStackTrace();
 					}
 				}
+			}
+			
+			if(msg.getPerformative() == ACLMessage.REFUSE){
+				System.out.println("CRLHHHHHHHHH VAIS ESPERAR QUE TE FODES.");
+				ACLMessage msg2 = new ACLMessage(ACLMessage.FAILURE);
+				msg2.addReceiver(clientInform);
+				System.out.println("VAI ENVIAR PARA -> " + clientInform.getLocalName());
+				msg2.setContent("CANCELA");
+				send(msg2);
+				System.out.println("ENVIOUUUU");
 			}
 			/*else{
 				ACLMessage inform = new ACLMessage(ACLMessage.REFUSE);

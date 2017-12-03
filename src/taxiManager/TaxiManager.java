@@ -16,13 +16,13 @@ public class TaxiManager {
 	public static AgentController central;
 	
 	//Main
-	public static void main(String args[]) throws StaleProxyException {
+	public static void main(String args[]) throws StaleProxyException, InterruptedException {
 		// Program Initialization
 		startJade();
 	}
 	
 	// FUNCTIONS    
-	public static void startJade() throws StaleProxyException{
+	public static void startJade() throws StaleProxyException, InterruptedException{
 		//Start Jade
 		Runtime rt = Runtime.instance();
 		Profile p = new ProfileImpl();
@@ -30,9 +30,9 @@ public class TaxiManager {
 		buildMap();
 	}
 	
-	public static void buildMap() throws StaleProxyException{	
+	public static void buildMap() throws StaleProxyException, InterruptedException{	
 		int NUMBER_TAXIS 	= 1;
-		int NUMBER_CLIENTS 	= 3;
+		int NUMBER_CLIENTS 	= 2;
 		
 		centralAgent(NUMBER_TAXIS);
 		taxiAgent(NUMBER_TAXIS);
@@ -55,10 +55,11 @@ public class TaxiManager {
 		}
 	}
 	
-	public static void clientAgent(int numberClients) throws StaleProxyException{
+	public static void clientAgent(int numberClients) throws StaleProxyException, InterruptedException{
 		//Clients initialization 
 		for (int i = 1; i <= numberClients; i++) {
 			AgentController client = cc.createNewAgent("Cliente" + i, "agents.Client", null);
+			Thread.sleep(50);
 			client.start();
 		}
 	}

@@ -19,7 +19,7 @@ public class Taxi extends Agent {
 	
 	public Taxi() {
 		this.available = 1;
-		this.capacity = 2;
+		this.capacity = 1;
 	}
 	
 	public int getAva(){
@@ -77,20 +77,32 @@ public class Taxi extends Agent {
 
 			}
 			
+			
 			/* RECEBE MENSAGEM CENTRAL
 			 * se receber uma mensagem do tipo proposal(da central)
 			 * significa que é o taxi que vai efectuar o serviço */
-			if (msg.getPerformative() == ACLMessage.ACCEPT_PROPOSAL) {			
-				//System.out.println("CENTRAL envia resposta para o taxi que vai efectuar o serviço.");
-				available = 0;
-				System.out.println(msg.getSender().getLocalName() + ": " + msg.getContent());
-				System.out.println(myAgent.getLocalName() + ": Ok, obrigado. Já vou efectuar o serviço.");
+			if(capacity > 0){
+				if (msg.getPerformative() == ACLMessage.ACCEPT_PROPOSAL) {			
+					//System.out.println("CENTRAL envia resposta para o taxi que vai efectuar o serviço.");
+					available = 0;
+					capacity--;	
+					System.out.println(msg.getSender().getLocalName() + ": " + msg.getContent());
+					System.out.println(myAgent.getLocalName() + ": Ok. Já vou buscar o Cliente.");
+				}
+				// se receber uma mensagem do tipo reject(da central)
+				//significa que é o taxi que nao vai efectuar o serviço
+				if (msg.getPerformative() == ACLMessage.REJECT_PROPOSAL) {
+					System.out.println(msg.getSender().getLocalName() + ": " + msg.getContent());
+					System.out.println(myAgent.getLocalName() + ": Ok Central, aguardo por novos clientes." + "\n");
+				}
 			}
-			// se receber uma mensagem do tipo reject(da central)
-			//significa que é o taxi que nao vai efectuar o serviço
-			if (msg.getPerformative() == ACLMessage.REJECT_PROPOSAL) {
-				System.out.println(msg.getSender().getLocalName() + ": " + msg.getContent());
-				System.out.println(myAgent.getLocalName() + ": Ok Central, aguardo por novos clientes." + "\n");
+			//Taxi RECUSA porque tem Capacidade CHEIA - nao pode atender mais clientes.
+			else{
+				System.out.println("[" + myAgent.getLocalName() +"]: Estou cheio.");
+				ACLMessage msg2 = new ACLMessage(ACLMessage.REFUSE);
+				msg2.addReceiver(msg.getSender());
+				msg2.setContent("0");
+				send(msg2);
 			}
 		}
 

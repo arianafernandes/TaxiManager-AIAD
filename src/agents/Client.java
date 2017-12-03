@@ -35,7 +35,7 @@ public class Client extends Agent {
 				ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
 				for (int i = 0; i < result.length; ++i)
 					msg.addReceiver(result[i].getName());
-
+				
 				// String agentName = getAID().getLocalName();
 				msg.setContent(a.getLocalName() + ": Quero um taxi.");
 				// System.out.println("Pedido do cliente para a central");
@@ -50,13 +50,19 @@ public class Client extends Agent {
 		public void action() {
 			
 			ACLMessage msg = blockingReceive();
-
+			
 			// se receber mensagem do tipo cfp (da central)
 			if (msg.getPerformative() == ACLMessage.INFORM){
 				System.out.println(myAgent.getLocalName() + ": Obrigado CENTRAL, fico à espera do " + msg.getContent() +".");
 			} else{
-				System.out.println(myAgent.getLocalName() + ": OK. Depois faço pedido.");
+				System.out.println(myAgent.getLocalName() + ": OK. Dentro de minutos faço NOVO pedido.");
 			}
+			
+
+			if(msg.getPerformative() == ACLMessage.FAILURE){
+				System.out.println("POIS TEM DE SER SENAO VOU A PE QUE  ME FODO");
+			}
+			
 		}
 	}
 
