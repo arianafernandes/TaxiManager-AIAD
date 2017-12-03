@@ -17,11 +17,22 @@ public class Taxi extends Agent {
 	public int capacity;
 
 	public Taxi() {
-		this.available = 1;
 	}
 
-	public int getAva() {
+	public void setAvalable(int val){
+		this.available = val;
+	}
+	
+	public int getAvailable() {
 		return available;
+	}
+	
+	public void setCapacity(int val){
+		this.capacity = val;
+	}
+	
+	public int getCapacity(){
+		return capacity;
 	}
 
 	// client behaviour é simple behaviour
@@ -62,15 +73,18 @@ public class Taxi extends Agent {
 					// proposta do taxi para a central
 					Random r = new Random();
 					int randint = Math.abs(r.nextInt()) % 11;
+					
 					String time = Integer.toString(randint);
-					String avl = Integer.toString(available);
-					String cap = Integer.toString(capacity);
+					String avl = Integer.toString(getAvailable());
+					String cap = Integer.toString(getCapacity());
+					
 					String args = time + "," + avl + "," + cap;
 					proposta.setContent(args);
 					send(proposta);
 
 					String av;
-					if (available == 1) {
+					System.out.println("AAAAVV: " + getAvailable());
+					if (getAvailable() == 1) {
 						av = "Disponivel";
 					} else {
 						av = "Não disponivel";
@@ -96,8 +110,12 @@ public class Taxi extends Agent {
 
 				// System.out.println("CENTRAL envia resposta para o taxi que
 				// vai efectuar o serviço.");
-				available = 0;
-				capacity = capacity - nP;
+				setCapacity( getCapacity() - nP);
+				
+				if(capacity == 0){
+					setAvalable(0);
+				}
+				
 				System.out.println(myAgent.getLocalName() + ": Ok. Já vou buscar o Cliente.");
 			}
 			// se receber uma mensagem do tipo reject(da central)
@@ -119,7 +137,9 @@ public class Taxi extends Agent {
 		Object[] args = getArguments();
 		if (args != null) {
 			// Extracting the integer.
-			this.capacity = Integer.parseInt((String) args[0]);	
+			int val = Integer.parseInt((String) args[0]);	
+			setCapacity(val);
+			setAvalable(1);
 		}
 		
 		// regista agente no DF
