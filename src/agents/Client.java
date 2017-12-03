@@ -11,7 +11,7 @@ import jade.lang.acl.ACLMessage;
 @SuppressWarnings("serial")
 public class Client extends Agent {
 
-	
+	int nClientes = 2;
 	public Client() {
 	}
 
@@ -36,10 +36,11 @@ public class Client extends Agent {
 				for (int i = 0; i < result.length; ++i)
 					msg.addReceiver(result[i].getName());
 				
-				// String agentName = getAID().getLocalName();
-				msg.setContent(a.getLocalName() + ": Quero um taxi.");
-				// System.out.println("Pedido do cliente para a central");
-				System.out.println(msg.getContent());
+				//Cliente pede taxi para nClientes pessoas
+				String nC = Integer.toString(nClientes);
+				msg.setContent(nC);
+				
+				System.out.println(a.getLocalName() + ": Quero um taxi para " + nClientes + " pessoa(s).");
 				send(msg);
 			} catch (FIPAException e) {
 				e.printStackTrace();
@@ -60,7 +61,7 @@ public class Client extends Agent {
 			
 
 			if(msg.getPerformative() == ACLMessage.FAILURE){
-				System.out.println("POIS TEM DE SER SENAO VOU A PE QUE  ME FODO");
+				System.out.println("FAILURE");
 			}
 			
 		}

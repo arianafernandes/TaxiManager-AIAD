@@ -8,16 +8,15 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 
-
 @SuppressWarnings("serial")
-public class Central extends Agent { //taxis
-	
+public class Central extends Agent { // taxis
+
 	public int nTotalTaxis;
 	public Agent[] allAgents;
-	
-	public Central(){
+
+	public Central() {
 	}
-	
+
 	class CentralBehaviour extends SimpleBehaviour {
 		int nTaxis = 0;
 		int min = 50;
@@ -26,7 +25,9 @@ public class Central extends Agent { //taxis
 		Agent myAgent;
 		AID clientInform;
 		int NClients;
-		
+		String nPessoas;
+		int countTaxis = 0;
+
 		// construtor do behaviour
 		public CentralBehaviour(Agent a) {
 			super(a);
@@ -38,127 +39,151 @@ public class Central extends Agent { //taxis
 
 			// ler a caixa de correio
 			ACLMessage msg = blockingReceive();
-			int countTaxis = 0;
-			
-			//PEDIDO DO CLIENTE
+
+			// PEDIDO DO CLIENTE
 			// se receber uma mensagem do tipo request(do cliente)
-			if (msg.getPerformative() == ACLMessage.REQUEST) {			
-				
-				if(nTotalTaxis != 0){
+			if (msg.getPerformative() == ACLMessage.REQUEST) {
+
+				if (nTotalTaxis != 0) {
 					DFAgentDescription template = new DFAgentDescription();
 					ServiceDescription taxi = new ServiceDescription();
 					taxi.setType("Taxi");
 					template.addServices(taxi);
-					
+
 					try {
 						// procra todos os taxis
 						// result sao todos os taxis
 						DFAgentDescription[] result = DFService.search(myAgent, template);
-						
-						//ENVIA MENSAGENS AOS TAXIS
+
+						// ENVIA MENSAGENS AOS TAXIS
 						// envia uma mensagem do tipo cfp para todos os taxis
 						ACLMessage pedido = new ACLMessage(ACLMessage.CFP);
 						nTaxis = result.length;
-						for (int i = 0; i < result.length; ++i){
+						for (int i = 0; i < result.length; ++i) {
 							pedido.addReceiver(result[i].getName());
 						}
-						System.out.println(myAgent.getLocalName() + ": O " + msg.getSender().getLocalName() + " quer um Taxi. Taxis qual o vosso tempo? ");
+						nPessoas = msg.getContent();
+						System.out.println(myAgent.getLocalName() + ": O " + msg.getSender().getLocalName()
+								+ " quer um Taxi para " + msg.getContent() + " pessoa(s). Taxis qual o vosso tempo? ");
 						System.out.println("A aguardar resposta dos taxis...");
 						clientInform = msg.getSender();
 						pedido.setContent(msg.getSender().getLocalName());
 						send(pedido);
-						
+
 					} catch (FIPAException e) {
 						e.printStackTrace();
 					}
-				} else{
-					System.out.println( myAgent.getLocalName() + ": Desculpe, atualmente não há Taxis.");
+				} else {
+					System.out.println(myAgent.getLocalName() + ": Desculpe, atualmente não há Taxis.");
 				}
-				
+
 			}
 
-			//RESPOSTA DO TAXI
+			// RESPOSTA DO TAXI
 			// se receber uma mensagem do tipo propose(do taxi)
 			if (msg.getPerformative() == ACLMessage.PROPOSE) {
-				
-				//((Taxi) myAgent).move((Location) ((Taxi) myAgent).getPath().get(0).getTarget());
-				
-				// incrementa o contador do numero de taxis
-				countTaxis++;
+				this.countTaxis++;
+				// System.out.println(msg.getContent());
 				String[] parts = msg.getContent().split(",");
-				String time = parts[0]; // 004
-				String available = parts[1]; // 034556
-				//System.out.println("TIME: " + time + " AVAILABLE: " + available );
-				
-				int x = Integer.parseInt(time);
-				// se o tempo recebido pelo taxi for menor que o minimo tempo
-				// atual atualiza o melhor taxi para o serviço
-				
-				if (x < min ) {
-					min = x;
-					taxiWinner = msg.getSender();
-				}
-				
-				// se ja tiver percorrido todos os taxis
-				if (countTaxis == nTaxis) {
-					// o problema é aqui
-					DFAgentDescription template = new DFAgentDescription();
-					ServiceDescription taxi = new ServiceDescription();
-					taxi.setType("Taxi");
-					template.addServices(taxi);
-					// alterando taxi e client uma das partes nao corre
-					try {
-						// procra todos os taxis
-						// result sao todos os taxis
-						DFAgentDescription[] result = DFService.search(myAgent, template);
+				String time = parts[0];
+				String avaliable = parts[1];
+				String cap = parts[2];//
 
-						// envia para os taxis com os piores tempos uma mensagem
-						// do tipo reject proposal
+				// System.out.println(time + avaliable + cap);
 
-						for (int i = 0; i < result.length; ++i) {
-							// envia para o taxi com o melhor tempo uma mensagem
-							// do tipo accept proposal
+				int nPessoasPedido = Integer.parseInt(nPessoas);
+				int capTaxi = Integer.parseInt(cap);
+				// if p ver se esta avaliable
 
-							//SE O TAXI FOR O MELHOR TAXI PARA O SERVIÇO - MENOR TEMPO
-							if (result[i].getName().equals(taxiWinner)) {
-								ACLMessage respostaW = new ACLMessage(ACLMessage.ACCEPT_PROPOSAL);
-								// System.out.println("taxi winner " +
-								// taxiWinner);
-								respostaW.addReceiver(result[i].getName());
-								respostaW.setContent(result[i].getName().getLocalName() + " efectue o serviço.");
-								
-								send(respostaW);
-								
-								//Avisa o cliente que o taxi esta a caminho
-								ServiceDescription tellCliente = new ServiceDescription();
-								taxi.setType("Client");
-								template.addServices(tellCliente);
-								
-								ACLMessage inform = new ACLMessage(ACLMessage.INFORM);
-								String taxiResponsavel = result[i].getName().getLocalName();
-								inform.setContent(taxiResponsavel);
-								inform.addReceiver(clientInform);
-								//System.out.println(inform);
-								send(inform);
-								
-							}
-							//SE O TAXI NAO FOR O MELHOR TAXI PARA O SERVIÇO - MAIORES TEMPOS
-							else {
-								ACLMessage respostaL = new ACLMessage(ACLMessage.REJECT_PROPOSAL);
-								respostaL.addReceiver(result[i].getName());
-								respostaL.setContent(result[i].getName().getLocalName() + " Não precisa de se deslocar. O cliente está atendido.");
-								send(respostaL);
+				if (avaliable.equals("1")) {
+
+					if (capTaxi >= nPessoasPedido) {
+
+						int x = Integer.parseInt(time);
+						// se o tempo recebido pelo taxi for menor que o minimo
+						// tempo
+						// atual atualiza o melhor taxi para o serviço
+
+						if (x < min) {
+							min = x;
+							taxiWinner = msg.getSender();
+						}
+
+						if (countTaxis == nTaxis) {
+
+							DFAgentDescription template = new DFAgentDescription();
+							ServiceDescription taxi = new ServiceDescription();
+							taxi.setType("Taxi");
+							template.addServices(taxi);
+
+							// alterando taxi e client uma das partes nao corre
+							try {
+								// procra todos os taxis
+								// result sao todos os taxis
+								DFAgentDescription[] result = DFService.search(myAgent, template);
+
+								// envia para os taxis com os piores tempos uma
+								// mensagem
+								// do tipo reject proposal
+
+								for (int i = 0; i < result.length; ++i) {
+									// envia para o taxi com o melhor tempo uma
+									// mensagem
+									// do tipo accept proposal
+
+									// SE O TAXI FOR O MELHOR TAXI PARA O
+									// SERVIÇO - MENOR TEMPO
+									if (result[i].getName().equals(taxiWinner)) {
+										ACLMessage respostaW = new ACLMessage(ACLMessage.ACCEPT_PROPOSAL);
+
+										// System.out.println("taxi winner " +
+										// taxiWinner);
+										respostaW.addReceiver(result[i].getName());
+										System.out.println(result[i].getName().getLocalName() + " efectue o serviço.");
+										respostaW.setContent(nPessoas);
+
+										send(respostaW);
+
+										// Avisa o cliente que o taxi esta a
+										// caminho
+										ServiceDescription tellCliente = new ServiceDescription();
+										taxi.setType("Client");
+										template.addServices(tellCliente);
+
+										ACLMessage inform = new ACLMessage(ACLMessage.INFORM);
+										String taxiResponsavel = result[i].getName().getLocalName();
+										inform.setContent(taxiResponsavel);
+										inform.addReceiver(clientInform);
+										// System.out.println(inform);
+										send(inform);
+
+									}
+									// SE O TAXI NAO FOR O MELHOR TAXI PARA O
+									// SERVIÇO - MAIORES TEMPOS
+									else {
+										ACLMessage respostaL = new ACLMessage(ACLMessage.REJECT_PROPOSAL);
+										respostaL.addReceiver(result[i].getName());
+										System.out.println(result[i].getName().getLocalName()
+												+ " Não precisa de se deslocar. O cliente está atendido.");
+										respostaL.setContent(result[i].getName().getLocalName()
+												+ " Não precisa de se deslocar. O cliente está atendido.");
+										send(respostaL);
+									}
+								}
+
+							} catch (FIPAException e) {
+								e.printStackTrace();
 							}
 						}
 
-					} catch (FIPAException e) {
-						e.printStackTrace();
 					}
+
 				}
+
 			}
-			
-			if(msg.getPerformative() == ACLMessage.REFUSE){
-				System.out.println("CRLHHHHHHHHH VAIS ESPERAR QUE TE FODES.");
+
+			if (msg.getPerformative() == ACLMessage.REFUSE) {
+				System.out.println("ESPERAR");
 				ACLMessage msg2 = new ACLMessage(ACLMessage.FAILURE);
 				msg2.addReceiver(clientInform);
 				System.out.println("VAI ENVIAR PARA -> " + clientInform.getLocalName());
@@ -166,13 +191,13 @@ public class Central extends Agent { //taxis
 				send(msg2);
 				System.out.println("ENVIOUUUU");
 			}
-			/*else{
-				ACLMessage inform = new ACLMessage(ACLMessage.REFUSE);
-				inform.setContent(myAgent.getLocalName() + ": Atualmente não há taxis. Efetue novo pedido dentro de minutos.\n");
-				System.out.println(inform.getContent());
-				inform.addReceiver(clientInform);
-				send(inform);
-			}*/
+			/*
+			 * else{ ACLMessage inform = new ACLMessage(ACLMessage.REFUSE);
+			 * inform.setContent(myAgent.getLocalName() +
+			 * ": Atualmente não há taxis. Efetue novo pedido dentro de minutos.\n"
+			 * ); System.out.println(inform.getContent());
+			 * inform.addReceiver(clientInform); send(inform); }
+			 */
 		}
 
 		// método done
@@ -183,10 +208,10 @@ public class Central extends Agent { //taxis
 
 	protected void setup() {
 		Object[] args = getArguments();
-        if (args != null) {
-            // Extracting the integer.
-        	this.nTotalTaxis = Integer.parseInt( (String) args[0] );     
-        }
+		if (args != null) {
+			// Extracting the integer.
+			this.nTotalTaxis = Integer.parseInt((String) args[0]);
+		}
 
 		// regista agente no DF
 		DFAgentDescription dfd = new DFAgentDescription();

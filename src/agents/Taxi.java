@@ -1,6 +1,5 @@
 package agents;
 
-import java.io.IOException;
 import java.util.Random;
 
 import jade.core.Agent;
@@ -13,19 +12,19 @@ import jade.lang.acl.ACLMessage;
 
 @SuppressWarnings("serial")
 public class Taxi extends Agent {
-	
+
 	public int available;
 	public int capacity;
-	
+
 	public Taxi() {
 		this.available = 1;
 		this.capacity = 1;
 	}
-	
-	public int getAva(){
+
+	public int getAva() {
 		return available;
 	}
-	
+
 	// client behaviour é simple behaviour
 	class TaxiBehaviour extends SimpleBehaviour {
 		private int n = 0;
@@ -61,49 +60,54 @@ public class Taxi extends Agent {
 					}
 
 					String agentName = getAID().getLocalName();
-					// cria numero random para tempo do taxi de resposta
+					// proposta do taxi para a central
 					Random r = new Random();
 					int randint = Math.abs(r.nextInt()) % 11;
-					String x = Integer.toString(randint);
-					String a = Integer.toString(available);
-					String args = x + "," + a; 
+					String time = Integer.toString(randint);
+					String avl = Integer.toString(available);
+					String cap = Integer.toString(capacity);
+					String args = time + "," + avl + "," + cap;
 					proposta.setContent(args);
 					send(proposta);
-					
-					System.out.println(agentName + ": estou a " + x + " minutos do " + msg.getContent() );
+
+					String av;
+					if (available == 1) {
+						av = "Disponivel";
+					} else {
+						av = "Não disponivel";
+					}
+					System.out.println(agentName + ": estou a " + time + " minutos do " + msg.getContent() + ". Tenho "
+							+ cap + " lugar(es) livre(s) " + "E estou " + av);
+
 				} catch (FIPAException e) {
 					e.printStackTrace();
 				}
 
 			}
 			
-			
-			/* RECEBE MENSAGEM CENTRAL
-			 * se receber uma mensagem do tipo proposal(da central)
-			 * significa que é o taxi que vai efectuar o serviço */
-			if(capacity > 0){
-				if (msg.getPerformative() == ACLMessage.ACCEPT_PROPOSAL) {			
-					//System.out.println("CENTRAL envia resposta para o taxi que vai efectuar o serviço.");
-					available = 0;
-					capacity--;	
-					System.out.println(msg.getSender().getLocalName() + ": " + msg.getContent());
-					System.out.println(myAgent.getLocalName() + ": Ok. Já vou buscar o Cliente.");
-				}
-				// se receber uma mensagem do tipo reject(da central)
-				//significa que é o taxi que nao vai efectuar o serviço
-				if (msg.getPerformative() == ACLMessage.REJECT_PROPOSAL) {
-					System.out.println(msg.getSender().getLocalName() + ": " + msg.getContent());
-					System.out.println(myAgent.getLocalName() + ": Ok Central, aguardo por novos clientes." + "\n");
-				}
+			/*
+			 * RECEBE MENSAGEM CENTRAL se receber uma mensagem do tipo
+			 * proposal(da central) significa que é o taxi que vai efectuar o
+			 * serviço
+			 */
+			if (msg.getPerformative() == ACLMessage.ACCEPT_PROPOSAL) {
+				
+				String nPessoas = msg.getContent();
+				int nP = Integer.parseInt(nPessoas);
+
+				// System.out.println("CENTRAL envia resposta para o taxi que
+				// vai efectuar o serviço.");
+				available = 0;
+				capacity = capacity - nP;
+				System.out.println(myAgent.getLocalName() + ": Ok. Já vou buscar o Cliente.");
 			}
-			//Taxi RECUSA porque tem Capacidade CHEIA - nao pode atender mais clientes.
-			else{
-				System.out.println("[" + myAgent.getLocalName() +"]: Estou cheio.");
-				ACLMessage msg2 = new ACLMessage(ACLMessage.REFUSE);
-				msg2.addReceiver(msg.getSender());
-				msg2.setContent("0");
-				send(msg2);
+			// se receber uma mensagem do tipo reject(da central)
+			// significa que é o taxi que nao vai efectuar o serviço
+			if (msg.getPerformative() == ACLMessage.REJECT_PROPOSAL) {
+				System.out.println("Depois resposta do taxi");
+				System.out.println(myAgent.getLocalName() + ": Ok Central, aguardo por novos clientes." + "\n");
 			}
+
 		}
 
 		// método done
