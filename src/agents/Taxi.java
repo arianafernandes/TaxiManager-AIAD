@@ -83,7 +83,6 @@ public class Taxi extends Agent {
 					send(proposta);
 
 					String av;
-					System.out.println("AAAAVV: " + getAvailable());
 					if (getAvailable() == 1) {
 						av = "Disponivel";
 					} else {
