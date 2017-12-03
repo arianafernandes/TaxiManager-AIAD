@@ -18,7 +18,6 @@ public class Taxi extends Agent {
 
 	public Taxi() {
 		this.available = 1;
-		this.capacity = 1;
 	}
 
 	public int getAva() {
@@ -104,7 +103,7 @@ public class Taxi extends Agent {
 			// se receber uma mensagem do tipo reject(da central)
 			// significa que é o taxi que nao vai efectuar o serviço
 			if (msg.getPerformative() == ACLMessage.REJECT_PROPOSAL) {
-				System.out.println("Depois resposta do taxi");
+				//System.out.println("Depois resposta do taxi");
 				System.out.println(myAgent.getLocalName() + ": Ok Central, aguardo por novos clientes." + "\n");
 			}
 
@@ -117,6 +116,12 @@ public class Taxi extends Agent {
 	}
 
 	protected void setup() {
+		Object[] args = getArguments();
+		if (args != null) {
+			// Extracting the integer.
+			this.capacity = Integer.parseInt((String) args[0]);	
+		}
+		
 		// regista agente no DF
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());

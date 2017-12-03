@@ -31,12 +31,15 @@ public class TaxiManager {
 	}
 	
 	public static void buildMap() throws StaleProxyException, InterruptedException{	
-		int NUMBER_TAXIS 	= 0;
-		int NUMBER_CLIENTS 	= 3;
+		int NUMBER_TAXIS 				= 1;
+		int TAXI_CAPACITY 				= 5;
+		
+		int NUMBER_CLIENTS 				= 2;
+		int NUMBER_PATIENTS_PER_CLIENT	= 2;
 		
 		centralAgent(NUMBER_TAXIS);
-		taxiAgent(NUMBER_TAXIS);
-		clientAgent(NUMBER_CLIENTS);
+		taxiAgent(NUMBER_TAXIS,TAXI_CAPACITY);
+		clientAgent(NUMBER_CLIENTS, NUMBER_PATIENTS_PER_CLIENT);
 	}
 
 	public static void centralAgent(int numberTaxis) throws StaleProxyException{
@@ -47,18 +50,24 @@ public class TaxiManager {
 		central.start();
 	}
 	
-	public static void taxiAgent(int numberTaxis) throws StaleProxyException{
+	public static void taxiAgent(int numberTaxis , int cap) throws StaleProxyException{
 		//Taxis initialization 
+		String args[] = new String[1];
+	    args[0] = Integer.toString(cap);
+	    
 		for (int i = 1; i <= numberTaxis; i++) {
-			AgentController taxi = cc.createNewAgent("Taxi" + i, "agents.Taxi",null);
+			AgentController taxi = cc.createNewAgent("Taxi" + i, "agents.Taxi",args);
 			taxi.start();
 		}
 	}
 	
-	public static void clientAgent(int numberClients) throws StaleProxyException, InterruptedException{
+	public static void clientAgent(int numberClients , int patiens) throws StaleProxyException, InterruptedException{
 		//Clients initialization 
+		String args[] = new String[1];
+	    args[0] = Integer.toString(patiens);
+		
 		for (int i = 1; i <= numberClients; i++) {
-			AgentController client = cc.createNewAgent("Cliente" + i, "agents.Client", null);
+			AgentController client = cc.createNewAgent("Cliente" + i, "agents.Client", args);
 			Thread.sleep(50);
 			client.start();
 		}

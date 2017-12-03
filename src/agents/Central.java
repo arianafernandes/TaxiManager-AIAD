@@ -183,13 +183,13 @@ public class Central extends Agent { // taxis
 			}
 
 			if (msg.getPerformative() == ACLMessage.REFUSE) {
-				System.out.println("ESPERAR");
+				System.out.println("[Central]  ESPERAR");
 				ACLMessage msg2 = new ACLMessage(ACLMessage.FAILURE);
 				msg2.addReceiver(clientInform);
-				System.out.println("VAI ENVIAR PARA -> " + clientInform.getLocalName());
-				msg2.setContent("CANCELA");
+				System.out.println("[Central]  VAI ENVIAR PARA -> " + clientInform.getLocalName());
+				msg2.setContent("[Central]  CANCELA");
 				send(msg2);
-				System.out.println("ENVIOUUUU");
+				System.out.println("[Central] ENVIOUUUU");
 			}
 			/*
 			 * else{ ACLMessage inform = new ACLMessage(ACLMessage.REFUSE);

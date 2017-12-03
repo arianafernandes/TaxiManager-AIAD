@@ -11,7 +11,8 @@ import jade.lang.acl.ACLMessage;
 @SuppressWarnings("serial")
 public class Client extends Agent {
 
-	int nClientes = 2;
+	int nClientes;
+	
 	public Client() {
 	}
 
@@ -68,7 +69,12 @@ public class Client extends Agent {
 	}
 
 	protected void setup() {
-
+		Object[] args = getArguments();
+		if (args != null) {
+			// Extracting the integer.
+			this.nClientes = Integer.parseInt((String) args[0]);
+		}
+		
 		// regista agente no DF
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());
