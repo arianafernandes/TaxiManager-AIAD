@@ -17,36 +17,36 @@ public class Taxi extends Agent {
 	public int capacity;
 	public int x;
 	public int y;
-	
 
 	public Taxi() {
-				
+
 	}
 
-	public double calcDist(int xi,int xf, int yi, int yf){
+	public double calcDist(int xi, int xf, int yi, int yf) {
 		double distF;
-		
+
 		int dx = xf - xi;
 		int dy = yf - yi;
 		int dx2 = dx * dx;
-		int dy2 = dy*dy;
-		
+		int dy2 = dy * dy;
+
 		distF = Math.sqrt(dx2 + dy2);
-		return distF ;
+		return distF;
 	}
-	public void setAvalable(int val){
+
+	public void setAvalable(int val) {
 		this.available = val;
 	}
-	
+
 	public int getAvailable() {
 		return available;
 	}
-	
-	public void setCapacity(int val){
+
+	public void setCapacity(int val) {
 		this.capacity = val;
 	}
-	
-	public int getCapacity(){
+
+	public int getCapacity() {
 		return capacity;
 	}
 
@@ -69,14 +69,13 @@ public class Taxi extends Agent {
 			// se receber mensagem do tipo cfp (da central)
 			if (msg.getPerformative() == ACLMessage.CFP) {
 
-				
 				String[] parts = msg.getContent().split(",");
 				String msgSender = parts[0];
 				String xf = parts[1];
 				String yf = parts[2];//
 				int xfi = Integer.parseInt(xf);
 				int yfi = Integer.parseInt(yf);
-				
+
 				DFAgentDescription template = new DFAgentDescription();
 				ServiceDescription sd1 = new ServiceDescription();
 				sd1.setType("Central");
@@ -94,17 +93,15 @@ public class Taxi extends Agent {
 
 					String agentName = getAID().getLocalName();
 					// proposta do taxi para a central
-					
-					double time = (calcDist(x,y,xfi,yfi) * 2);
-					
+
+					double time = (calcDist(x, y, xfi, yfi) * 2);
+
 					String timeS = String.valueOf(time);
 					String avl = Integer.toString(getAvailable());
 					String cap = Integer.toString(getCapacity());
-					
-					
+
 					String args = timeS + "," + avl + "," + cap;
 					proposta.setContent(args);
-					
 
 					String av;
 					if (getAvailable() == 1) {
@@ -112,41 +109,42 @@ public class Taxi extends Agent {
 					} else {
 						av = "indisponivel";
 					}
-					System.out.println(agentName + ": estou a " + String.format( "%.2f", time) + " minutos do " + msgSender + ". Tenho "
-							+ cap + " lugar(es) livre(s) " + "e estou " + av);
-					
+					System.out.println(agentName + ": estou a " + String.format("%.2f", time) + " minutos do "
+							+ msgSender + ". Tenho " + cap + " lugar(es) livre(s) " + "e estou " + av);
+
 					send(proposta);
 				} catch (FIPAException e) {
 					e.printStackTrace();
 				}
 
 			}
-			
+
 			/*
-			 * RECEBE MENSAGEM CENTRAL se receber uma mensagem do tipo
-			 * proposal(da central) significa que é o taxi que vai efectuar o
-			 * serviço
+			 * RECEBE MENSAGEM CENTRAL se receber uma mensagem do tipo proposal(da central)
+			 * significa que é o taxi que vai efectuar o serviço
 			 */
 			if (msg.getPerformative() == ACLMessage.ACCEPT_PROPOSAL) {
-				
+
 				String nPessoas = msg.getContent();
 				int nP = Integer.parseInt(nPessoas);
 
 				// System.out.println("CENTRAL envia resposta para o taxi que
 				// vai efectuar o serviço.");
-				setCapacity( getCapacity() - nP);
-				
-				if(capacity == 0){
+				setCapacity(getCapacity() - nP);
+
+				if (capacity == 0) {
 					setAvalable(0);
 				}
-				
+
 				System.out.println(myAgent.getLocalName() + ": Ok. Já vou buscar o Cliente.");
 			}
 			// se receber uma mensagem do tipo reject(da central)
 			// significa que é o taxi que nao vai efectuar o serviço
 			if (msg.getPerformative() == ACLMessage.REJECT_PROPOSAL) {
-				//System.out.println("Depois resposta do taxi");
-				System.out.println(myAgent.getLocalName() + ": Ok Central, aguardo por novos clientes.");
+				// System.out.println("Depois resposta do taxi");
+				if (available != 0) {
+					System.out.println(myAgent.getLocalName() + ": Ok Central, aguardo por novos clientes.");
+				}
 			}
 
 		}
@@ -161,15 +159,14 @@ public class Taxi extends Agent {
 		Object[] args = getArguments();
 		if (args != null) {
 			// Extracting the integer.
-			int val = Integer.parseInt((String) args[0]);	
+			int val = Integer.parseInt((String) args[0]);
 			setCapacity(val);
 			setAvalable(1);
 			Random r = new Random();
 			this.x = Math.abs(r.nextInt()) % 20;
 			this.y = Math.abs(r.nextInt()) % 20;
 		}
-		
-		
+
 		// regista agente no DF
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());
