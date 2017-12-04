@@ -1,5 +1,6 @@
 package agents;
 
+import java.util.*;
 import jade.core.*;
 import jade.core.behaviours.SimpleBehaviour;
 import jade.domain.DFService;
@@ -10,9 +11,11 @@ import jade.lang.acl.ACLMessage;
 
 @SuppressWarnings("serial")
 public class Central extends Agent { // taxis
-
+	
+	//total taxis from taxiManager
 	public int nTotalTaxis;
 	public Agent[] allAgents;
+	public TreeMap<Integer, AID> allTaxis = new TreeMap<Integer, AID>();
 
 	public Central() {
 	}
@@ -82,104 +85,65 @@ public class Central extends Agent { // taxis
 			// RESPOSTA DO TAXI
 			// se receber uma mensagem do tipo propose(do taxi)
 			if (msg.getPerformative() == ACLMessage.PROPOSE) {
+		
 				this.countTaxis++;
-				// System.out.println(msg.getContent());
 				String[] parts = msg.getContent().split(",");
 				String time = parts[0];
 				String avaliable = parts[1];
 				String cap = parts[2];//
 
-				// System.out.println(time + avaliable + cap);
-
 				int nPessoasPedido = Integer.parseInt(nPessoas);
 				int capTaxi = Integer.parseInt(cap);
+				
 				// if p ver se esta avaliable
-
-				if (avaliable.equals("1")) {
-
+				// adiciona a Taxi que enviou proposta na lista 
+				// desta forma temos acesso a TODOS os taxis que enviaram proposta
+				// sem array so era possivel aceder à ultima proposta [ERRADO]
+				//quando todos os taxis responderem ao pedido da central podemos continuar
+				if (avaliable.equals("1")) {					
+					
 					if (capTaxi >= nPessoasPedido) {
-
-						int x = Integer.parseInt(time);
-						// se o tempo recebido pelo taxi for menor que o minimo
-						// tempo
-						// atual atualiza o melhor taxi para o serviço
-
-						if (x < min) {
-							min = x;
-							taxiWinner = msg.getSender();
-						}
-
-						if (countTaxis == nTaxis) {
-
-							DFAgentDescription template = new DFAgentDescription();
-							ServiceDescription taxi = new ServiceDescription();
-							taxi.setType("Taxi");
-							template.addServices(taxi);
-
-							// alterando taxi e client uma das partes nao corre
-							try {
-								// procra todos os taxis
-								// result sao todos os taxis
-								DFAgentDescription[] result = DFService.search(myAgent, template);
-
-								// envia para os taxis com os piores tempos uma
-								// mensagem
-								// do tipo reject proposal
-
-								for (int i = 0; i < result.length; ++i) {
-									// envia para o taxi com o melhor tempo uma
-									// mensagem
-									// do tipo accept proposal
-
-									// SE O TAXI FOR O MELHOR TAXI PARA O
-									// SERVIÇO - MENOR TEMPO
-									if (result[i].getName().equals(taxiWinner)) {
-										ACLMessage respostaW = new ACLMessage(ACLMessage.ACCEPT_PROPOSAL);
-
-										// System.out.println("taxi winner " +
-										// taxiWinner);
-										respostaW.addReceiver(result[i].getName());
-										System.out.println(result[i].getName().getLocalName() + " efectue o serviço.");
-										respostaW.setContent(nPessoas);
-
-										send(respostaW);
-
-										// Avisa o cliente que o taxi esta a
-										// caminho
-										ServiceDescription tellCliente = new ServiceDescription();
-										taxi.setType("Client");
-										template.addServices(tellCliente);
-
-										ACLMessage inform = new ACLMessage(ACLMessage.INFORM);
-										String taxiResponsavel = result[i].getName().getLocalName();
-										inform.setContent(taxiResponsavel);
-										inform.addReceiver(clientInform);
-										// System.out.println(inform);
-										send(inform);
-
-									}
-									// SE O TAXI NAO FOR O MELHOR TAXI PARA O
-									// SERVIÇO - MAIORES TEMPOS
-									else {
-										ACLMessage respostaL = new ACLMessage(ACLMessage.REJECT_PROPOSAL);
-										respostaL.addReceiver(result[i].getName());
-										System.out.println(result[i].getName().getLocalName()
-												+ " Não precisa de se deslocar. O cliente está atendido.");
-										respostaL.setContent(result[i].getName().getLocalName()
-												+ " Não precisa de se deslocar. O cliente está atendido.");
-										send(respostaL);
-									}
-								}
-
-							} catch (FIPAException e) {
-								e.printStackTrace();
-							}
-						}
-
+						
+						allTaxis.put(Integer.parseInt(time), msg.getSender());
 					}
-
 				}
+						
+				if (countTaxis == nTaxis) {
+						
+					if (!allTaxis.isEmpty()) {
+						ACLMessage respostaW = new ACLMessage(ACLMessage.ACCEPT_PROPOSAL);
+						
+						// System.out.println("taxi winner " +
+						// taxiWinner);
+						respostaW.addReceiver(allTaxis.get(allTaxis.firstKey()));
+						System.out.println(myAgent.getLocalName() + ": " + allTaxis.get(allTaxis.firstKey()).getLocalName() + " efectue o serviço.");
+						respostaW.setContent(nPessoas);
 
+						send(respostaW);
+
+						ACLMessage inform = new ACLMessage(ACLMessage.INFORM);
+						String taxiResponsavel = allTaxis.get(allTaxis.firstKey()).getLocalName();
+						inform.setContent(taxiResponsavel);
+						inform.addReceiver(clientInform);
+						// System.out.println(inform);
+						send(inform);
+						this.countTaxis = 0;
+						
+						allTaxis.remove(allTaxis.firstKey());
+						
+						for(int key : allTaxis.keySet()) {
+							ACLMessage respostaL = new ACLMessage(ACLMessage.REJECT_PROPOSAL);
+							respostaL.addReceiver(allTaxis.get(key));
+							System.out.println(allTaxis.get(key).getLocalName()
+									+ " Não precisa de se deslocar. O cliente está atendido.");
+							respostaL.setContent(allTaxis.get(key).getLocalName()
+									+ " Não precisa de se deslocar. O cliente está atendido.");
+							send(respostaL);
+						}
+						
+						allTaxis.clear();
+					}
+				}
 			}
 
 			if (msg.getPerformative() == ACLMessage.REFUSE) {

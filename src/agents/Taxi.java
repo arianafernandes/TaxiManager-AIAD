@@ -80,7 +80,7 @@ public class Taxi extends Agent {
 					
 					String args = time + "," + avl + "," + cap;
 					proposta.setContent(args);
-					send(proposta);
+					
 
 					String av;
 					if (getAvailable() == 1) {
@@ -90,7 +90,8 @@ public class Taxi extends Agent {
 					}
 					System.out.println(agentName + ": estou a " + time + " minutos do " + msg.getContent() + ". Tenho "
 							+ cap + " lugar(es) livre(s) " + "E estou " + av);
-
+					
+					send(proposta);
 				} catch (FIPAException e) {
 					e.printStackTrace();
 				}
