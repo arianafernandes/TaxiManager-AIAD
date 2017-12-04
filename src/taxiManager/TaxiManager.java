@@ -1,6 +1,8 @@
 package taxiManager;
 
 import java.lang.Object;
+import java.util.Scanner;
+
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.core.Runtime;
@@ -14,6 +16,11 @@ public class TaxiManager {
 	public static Profile p;
 	public static ContainerController cc;
 	public static AgentController central;
+	public static int NUMBER_TAXIS 					= 0;
+	public static int TAXI_CAPACITY 				= 4;
+	public static int NUMBER_CLIENTS 				= 0;
+	public static int SHARED 						= 0;
+	public static int NUMBER_PATIENTS_PER_CLIENT	= 1;
 	
 	//Main
 	public static void main(String args[]) throws StaleProxyException, InterruptedException {
@@ -30,13 +37,27 @@ public class TaxiManager {
 		buildMap();
 	}
 	
-	public static void buildMap() throws StaleProxyException, InterruptedException{	
-		int NUMBER_TAXIS 				= 30;
-		int TAXI_CAPACITY 				= 4;
+	public static void printDisplay(){
 		
-		int NUMBER_CLIENTS 				= 50;
-		int NUMBER_PATIENTS_PER_CLIENT	= 2;
+		Scanner input = new Scanner(System.in);  // Reading from System.in
+		System.out.println("Enter a number: ");
 		
+		System.out.println("###############################################");
+		System.out.println("#####                                    #####");
+		System.out.println("#####     | BEM VENDO TAXI MANAGER |     #####");
+		System.out.println("#####                                    #####");
+		System.out.println("###############################################");
+		System.out.println();
+		System.out.print("Quantos Clientes: " );
+		NUMBER_CLIENTS = input.nextInt();
+		System.out.print("Quantos Taxis: " );
+		NUMBER_TAXIS = input.nextInt();
+		System.out.print("Deseja uma central Partilhada 1(Yes) 0(No): " );
+		SHARED = input.nextInt();
+	}
+	
+	public static void buildMap() throws StaleProxyException, InterruptedException{			
+		printDisplay();
 		centralAgent(NUMBER_TAXIS);
 		taxiAgent(NUMBER_TAXIS,TAXI_CAPACITY);
 		clientAgent(NUMBER_CLIENTS, NUMBER_PATIENTS_PER_CLIENT);
