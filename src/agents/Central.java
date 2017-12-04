@@ -101,19 +101,17 @@ public class Central extends Agent { // taxis
 						ACLMessage respostaL = new ACLMessage(ACLMessage.REJECT_PROPOSAL);
 						respostaL.addReceiver(msg.getSender());
 
-						System.out.println(msg.getSender().getLocalName()
-								+ ": Não precisa de se deslocar. O seu taxi não tem espaço para o numero de passageiros.");
+						System.out.println(myAgent.getLocalName() + ": " + msg.getSender().getLocalName()
+								+ " não precisa de se deslocar. O seu taxi não tem espaço para o numero de passageiros.");
 						send(respostaL);
 					}
 				} else {
 					ACLMessage respostaL = new ACLMessage(ACLMessage.REJECT_PROPOSAL);
 					respostaL.addReceiver(msg.getSender());
 
-					System.out.println(msg.getSender().getLocalName()
-							+ ": Não precisa de se deslocar. O seu taxi ja está ocupado.");
+					//System.out.println(myAgent.getLocalName() + ": " + msg.getSender().getLocalName() + " não precisa de se deslocar. O seu taxi ja está ocupado.");
 					send(respostaL);
 				}
-
 				if (countTaxis == nTaxis) {
 					if (!allTaxis.isEmpty()) {
 						// informa o melhor taxi para efectuar o serviço
@@ -151,7 +149,6 @@ public class Central extends Agent { // taxis
 
 						}
 					}
-
 					else{
 						System.out.println(myAgent.getLocalName() + ": Desculpe, atualmente não ha taxis.");
 						ACLMessage refuse = new ACLMessage(ACLMessage.REFUSE);
