@@ -58,15 +58,16 @@ public class TaxiManager {
 	
 	public static void buildMap() throws StaleProxyException, InterruptedException{			
 		printDisplay();
-		centralAgent(NUMBER_TAXIS);
+		centralAgent(NUMBER_TAXIS, SHARED);
 		taxiAgent(NUMBER_TAXIS,TAXI_CAPACITY);
 		clientAgent(NUMBER_CLIENTS, NUMBER_PATIENTS_PER_CLIENT);
 	}
 
-	public static void centralAgent(int numberTaxis) throws StaleProxyException{
+	public static void centralAgent(int numberTaxis, int shared) throws StaleProxyException{
 		//Central initialization
-		String args[] = new String[1];
+		String args[] = new String[2];
 	    args[0] = Integer.toString(numberTaxis);
+	    args[1] = Integer.toString(shared);
 		central = cc.createNewAgent("[CENTRAL] ", "agents.Central", args);
 		central.start();
 	}

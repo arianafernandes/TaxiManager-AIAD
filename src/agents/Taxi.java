@@ -125,16 +125,21 @@ public class Taxi extends Agent {
 			 */
 			if (msg.getPerformative() == ACLMessage.ACCEPT_PROPOSAL) {
 
-				String nPessoas = msg.getContent();
-				int nP = Integer.parseInt(nPessoas);
+				String[] parts = msg.getContent().split(",");
+				int nP = Integer.parseInt(parts[0]);
+				int checked_shared = Integer.parseInt(parts[1]);
 
 				// System.out.println("CENTRAL envia resposta para o taxi que
 				// vai efectuar o serviço.");
+				//VERIFICAÇÃO DE SER TAXI PARTILHADO OU NÃO
 				setCapacity(getCapacity() - nP);
-
-				if (capacity == 0) {
-					setAvalable(0);
+				if (checked_shared == 1) {
+					if (capacity == 0) {
+						setAvalable(0);
+					}
 				}
+				else 
+					setAvalable(0);
 
 				System.out.println(myAgent.getLocalName() + ": Ok. Já vou buscar o Cliente.");
 			}

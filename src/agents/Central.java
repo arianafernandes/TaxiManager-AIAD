@@ -18,6 +18,7 @@ public class Central extends Agent { // taxis
 	public TreeMap<Double, AID> allTaxis = new TreeMap<Double, AID>();
 	public double price;
 	public double balance;
+	public int checked_shared;
 
 	public Central() {
 	}
@@ -33,6 +34,11 @@ public class Central extends Agent { // taxis
 		distF = Math.sqrt(dx2 + dy2);
 		return distF ;
 	}
+	
+	public int getchecked_shared(){
+		return this.checked_shared;
+	}
+	
 	
 	public void setPrice(double p){
 		this.price = p;
@@ -115,7 +121,7 @@ public class Central extends Agent { // taxis
 						respostaW.addReceiver(allTaxis.get(allTaxis.firstKey()));
 						System.out.println(myAgent.getLocalName() + ": "
 								+ allTaxis.get(allTaxis.firstKey()).getLocalName() + " efectue o serviço.");
-						respostaW.setContent(nPessoas);
+						respostaW.setContent(nPessoas +  "," + getchecked_shared());
 						send(respostaW);
 
 						// Informa o client
@@ -128,8 +134,8 @@ public class Central extends Agent { // taxis
 						this.countTaxis = 0;
 						
 						setBalance(getBalance() + getPrice());
-						//System.out.println("[Price]: " + getPrice());
-						//System.out.println("[Balance]: " + getBalance());
+						System.out.println("[=Price=]: " + String.format("%.2f", getPrice()));
+						System.out.println("[=Balance=]: " + String.format("%.2f", getBalance()));
 						
 						allTaxis.remove(allTaxis.firstKey());
 
@@ -225,6 +231,7 @@ public class Central extends Agent { // taxis
 			// Extracting the integer.
 			this.nTotalTaxis = Integer.parseInt((String) args[0]);
 			this.balance = 0;
+			this.checked_shared = Integer.parseInt((String) args[1]);
 		}
 		// regista agente no DF
 		DFAgentDescription dfd = new DFAgentDescription();
