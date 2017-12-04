@@ -1,5 +1,7 @@
 package agents;
 
+import java.util.Random;
+
 import jade.core.Agent;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.domain.DFService;
@@ -12,8 +14,24 @@ import jade.lang.acl.ACLMessage;
 public class Client extends Agent {
 
 	int nClientes;
+	int xi = 0;
+	int xf;
+	int yi;
+	int yf;
 	
 	public Client() {
+	}
+		
+	public double calcDist(int xi,int xf, int yi, int yf){
+		double distF;
+		
+		int dx = xf - xi;
+		int dy = yf - yi;
+		int dx2 = dx * dx;
+		int dy2 = dy*dy;
+		
+		distF = Math.sqrt(dx2 + dy2);
+		return distF ;
 	}
 
 	// client behaviour é one shot behaviour pois o agent so tem um
@@ -39,10 +57,13 @@ public class Client extends Agent {
 				
 				//Cliente pede taxi para nClientes pessoas
 				String nC = Integer.toString(nClientes);
-				msg.setContent(nC);
+				String xiS = Integer.toString(xi);
+				String yiS = Integer.toString(yi);
+				msg.setContent(nC + "," + xiS + "," + yiS);
 				
 				System.out.println("---------------------------------");
-				System.out.println(a.getLocalName() + ": Quero um taxi para " + nClientes + " pessoa(s).");
+				System.out.println(a.getLocalName() + ": Quero um taxi para " + nClientes + " pessoa(s) do sitio " + 
+				xi + "-" + yi + " para o sitio " + xf + "-" + yf + ".");
 				send(msg);
 			} catch (FIPAException e) {
 				e.printStackTrace();
@@ -54,14 +75,13 @@ public class Client extends Agent {
 			
 			ACLMessage msg = blockingReceive();
 			
-			// se receber mensagem do tipo cfp (da central)
+			//se recebe mensagem inform da central
 			if (msg.getPerformative() == ACLMessage.INFORM){
 				System.out.println(myAgent.getLocalName() + ": Obrigado CENTRAL, fico à espera do " + msg.getContent() +".");
-			} else{
-				System.out.println(myAgent.getLocalName() + ": OK. Dentro de minutos faço NOVO pedido.");
+			} 
+			if(msg.getPerformative() == ACLMessage.REFUSE){
+				System.out.println(myAgent.getLocalName() + ": OK. Dentro de minutos faço novo pedido.");
 			}
-			
-
 			if(msg.getPerformative() == ACLMessage.FAILURE){
 				System.out.println("FAILURE");
 			}
@@ -74,6 +94,11 @@ public class Client extends Agent {
 		if (args != null) {
 			// Extracting the integer.
 			this.nClientes = Integer.parseInt((String) args[0]);
+			Random r = new Random();
+			this.xi = Math.abs(r.nextInt()) % 6;
+			this.yi = Math.abs(r.nextInt()) % 6;
+			this.xf = Math.abs(r.nextInt()) % 6;
+			this.yf = Math.abs(r.nextInt()) % 6;
 		}
 		
 		// regista agente no DF

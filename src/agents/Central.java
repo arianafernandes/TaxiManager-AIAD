@@ -11,11 +11,12 @@ import jade.lang.acl.ACLMessage;
 
 @SuppressWarnings("serial")
 public class Central extends Agent { // taxis
-	
-	//total taxis from taxiManager
+
+	// total taxis from taxiManager
 	public int nTotalTaxis;
 	public Agent[] allAgents;
-	public TreeMap<Integer, AID> allTaxis = new TreeMap<Integer, AID>();
+	public TreeMap<Double, AID> allTaxis = new TreeMap<Double, AID>();
+	public int price;
 
 	public Central() {
 	}
@@ -30,7 +31,7 @@ public class Central extends Agent { // taxis
 		Agent taxiW;
 		Agent myAgent;
 		String nPessoas;
-		
+
 		public CentralBehaviour(Agent a) {
 			super(a);
 			myAgent = a;
@@ -40,14 +41,11 @@ public class Central extends Agent { // taxis
 			// LER CAIXA DO CORREIO
 			ACLMessage msg = blockingReceive();
 
-			// PEDIDO [REQUEST] DO CLIENTE 
+			// PEDIDO [REQUEST] DO CLIENTE
 			if (msg.getPerformative() == ACLMessage.REQUEST) {
 				if (nTotalTaxis != 0) {
 					callAllTaxis(msg);
-				} else {
-					System.out.println(myAgent.getLocalName() + ": Desculpe, atualmente não há Taxis.");
 				}
-
 			}
 
 			// RESPOSTA [PROPOSTA] DO TAXI
@@ -58,43 +56,42 @@ public class Central extends Agent { // taxis
 				String cap = parts[2];//
 				int nPessoasPedido = Integer.parseInt(nPessoas);
 				int capTaxi = Integer.parseInt(cap);
-				//variavel que garante que recebemos pedidos de TODOS os Taxis
+				// variavel que garante que recebemos pedidos de TODOS os Taxis
 				this.countTaxis++;
-				
-				if (avaliable.equals("1")) {					
+
+				if (avaliable.equals("1")) {
 					if (capTaxi >= nPessoasPedido) {
-						allTaxis.put(Integer.parseInt(time), msg.getSender());
-					}
-					else{
+						allTaxis.put(Double.parseDouble(time), msg.getSender());
+					} else {
 						ACLMessage respostaL = new ACLMessage(ACLMessage.REJECT_PROPOSAL);
 						respostaL.addReceiver(msg.getSender());
-						
+
 						System.out.println(msg.getSender().getLocalName()
 								+ " Não precisa de se deslocar. O seu taxi não tem espaço para o numero de passageiros.");
 						System.out.println("-----------");
 						send(respostaL);
 					}
-				}
-				else{
+				} else {
 					ACLMessage respostaL = new ACLMessage(ACLMessage.REJECT_PROPOSAL);
 					respostaL.addReceiver(msg.getSender());
-					
+
 					System.out.println(msg.getSender().getLocalName()
 							+ " Não precisa de se deslocar. O seu taxi ja está ocupado.");
 					System.out.println("-----------");
 					send(respostaL);
 				}
-			
-				if (countTaxis == nTaxis) {	
+
+				if (countTaxis == nTaxis) {
 					if (!allTaxis.isEmpty()) {
-						//informa o melhor taxi para efectuar o serviço
+						// informa o melhor taxi para efectuar o serviço
 						ACLMessage respostaW = new ACLMessage(ACLMessage.ACCEPT_PROPOSAL);
 						respostaW.addReceiver(allTaxis.get(allTaxis.firstKey()));
-						System.out.println(myAgent.getLocalName() + ": " + allTaxis.get(allTaxis.firstKey()).getLocalName() + " efectue o serviço.");
+						System.out.println(myAgent.getLocalName() + ": "
+								+ allTaxis.get(allTaxis.firstKey()).getLocalName() + " efectue o serviço.");
 						respostaW.setContent(nPessoas);
 						send(respostaW);
-						
-						//Informa o client
+
+						// Informa o client
 						ACLMessage inform = new ACLMessage(ACLMessage.INFORM);
 						String taxiResponsavel = allTaxis.get(allTaxis.firstKey()).getLocalName();
 						inform.setContent(taxiResponsavel);
@@ -102,24 +99,24 @@ public class Central extends Agent { // taxis
 						// System.out.println(inform);
 						send(inform);
 						this.countTaxis = 0;
-						
+
 						allTaxis.remove(allTaxis.firstKey());
-						
-						//Avisa todos os Taxis disponiveis a responder ao CLiente que já não é necessario
-						for(int key : allTaxis.keySet()) {
+
+						// Avisa todos os Taxis disponiveis a responder ao
+						// CLiente que já não é necessario
+						for (Double key : allTaxis.keySet()) {
 							ACLMessage respostaL = new ACLMessage(ACLMessage.REJECT_PROPOSAL);
 							respostaL.addReceiver(allTaxis.get(key));
-							
+
 							System.out.println(allTaxis.get(key).getLocalName()
 									+ " Não precisa de se deslocar. O cliente está atendido.");
 							respostaL.setContent(allTaxis.get(key).getLocalName()
 									+ " Não precisa de se deslocar. O cliente está atendido.");
 							send(respostaL);
+
 						}
+
 						allTaxis.clear();
-					}
-					if(allTaxis.isEmpty()){
-						System.out.println(myAgent.getLocalName() + ": Desculpe, atualmente não há Taxis.");
 					}
 				}
 			}
@@ -127,19 +124,20 @@ public class Central extends Agent { // taxis
 			if (msg.getPerformative() == ACLMessage.REFUSE) {
 				ACLMessage msg2 = new ACLMessage(ACLMessage.FAILURE);
 				msg2.addReceiver(clientInform);
-				//System.out.println("[Central]  VAI ENVIAR PARA -> " + clientInform.getLocalName());
+				// System.out.println("[Central] VAI ENVIAR PARA -> " +
+				// clientInform.getLocalName());
 				send(msg2);
 			}
 		}
-		
-		public void callAllTaxis(ACLMessage msg){
+
+		public void callAllTaxis(ACLMessage msg) {
 			DFAgentDescription template = new DFAgentDescription();
 			ServiceDescription taxi = new ServiceDescription();
 			taxi.setType("Taxi");
 			template.addServices(taxi);
 
 			try {
-				//PROCURA TODOS OS TAXIS
+				// PROCURA TODOS OS TAXIS
 				DFAgentDescription[] result = DFService.search(myAgent, template);
 
 				// ENVIA MENSAGENS AOS TAXIS DO TIPO CFP
@@ -148,19 +146,24 @@ public class Central extends Agent { // taxis
 				for (int i = 0; i < result.length; ++i) {
 					pedido.addReceiver(result[i].getName());
 				}
-				nPessoas = msg.getContent();
+				String[] parts = msg.getContent().split(",");
+				this.nPessoas = parts[0];
+				String xi = parts[1];
+				String yi = parts[2];//
+
 				System.out.println(myAgent.getLocalName() + ": O " + msg.getSender().getLocalName()
-						+ " quer um Taxi para " + msg.getContent() + " pessoa(s). Taxis qual o vosso tempo? ");
+						+ " quer um Taxi para " + nPessoas + " pessoa(s). Taxis qual o vosso tempo para o sitio " + xi
+						+ "-" + yi + "?");
 				System.out.println("A aguardar resposta dos taxis...");
 				clientInform = msg.getSender();
-				pedido.setContent(msg.getSender().getLocalName());
+				pedido.setContent(msg.getSender().getLocalName() + "," + xi + "," + yi);
 				send(pedido);
 
 			} catch (FIPAException e) {
 				e.printStackTrace();
 			}
 		}
-		
+
 		// METODO DONE
 		public boolean done() {
 			return false;

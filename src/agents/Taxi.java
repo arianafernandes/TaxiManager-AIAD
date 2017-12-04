@@ -15,10 +15,25 @@ public class Taxi extends Agent {
 
 	public int available;
 	public int capacity;
+	public int x;
+	public int y;
+	
 
 	public Taxi() {
+				
 	}
 
+	public double calcDist(int xi,int xf, int yi, int yf){
+		double distF;
+		
+		int dx = xf - xi;
+		int dy = yf - yi;
+		int dx2 = dx * dx;
+		int dy2 = dy*dy;
+		
+		distF = Math.sqrt(dx2 + dy2);
+		return distF ;
+	}
 	public void setAvalable(int val){
 		this.available = val;
 	}
@@ -54,6 +69,14 @@ public class Taxi extends Agent {
 			// se receber mensagem do tipo cfp (da central)
 			if (msg.getPerformative() == ACLMessage.CFP) {
 
+				
+				String[] parts = msg.getContent().split(",");
+				String msgSender = parts[0];
+				String xf = parts[1];
+				String yf = parts[2];//
+				int xfi = Integer.parseInt(xf);
+				int yfi = Integer.parseInt(yf);
+				
 				DFAgentDescription template = new DFAgentDescription();
 				ServiceDescription sd1 = new ServiceDescription();
 				sd1.setType("Central");
@@ -71,14 +94,15 @@ public class Taxi extends Agent {
 
 					String agentName = getAID().getLocalName();
 					// proposta do taxi para a central
-					Random r = new Random();
-					int randint = Math.abs(r.nextInt()) % 11;
 					
-					String time = Integer.toString(randint);
+					double time = (calcDist(x,y,xfi,yfi) * 2);
+					
+					String timeS = String.valueOf(time);
 					String avl = Integer.toString(getAvailable());
 					String cap = Integer.toString(getCapacity());
 					
-					String args = time + "," + avl + "," + cap;
+					
+					String args = timeS + "," + avl + "," + cap;
 					proposta.setContent(args);
 					
 
@@ -88,7 +112,7 @@ public class Taxi extends Agent {
 					} else {
 						av = "Não disponivel";
 					}
-					System.out.println(agentName + ": estou a " + time + " minutos do " + msg.getContent() + ". Tenho "
+					System.out.println(agentName + ": estou a " + timeS + " minutos do " + msgSender + ". Tenho "
 							+ cap + " lugar(es) livre(s) " + "E estou " + av);
 					
 					send(proposta);
@@ -140,7 +164,11 @@ public class Taxi extends Agent {
 			int val = Integer.parseInt((String) args[0]);	
 			setCapacity(val);
 			setAvalable(1);
+			Random r = new Random();
+			this.x = Math.abs(r.nextInt()) % 6;
+			this.y = Math.abs(r.nextInt()) % 6;
 		}
+		
 		
 		// regista agente no DF
 		DFAgentDescription dfd = new DFAgentDescription();
