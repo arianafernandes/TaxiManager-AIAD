@@ -34,7 +34,7 @@ public class TaxiManager {
 		int NUMBER_TAXIS 				= 2;
 		int TAXI_CAPACITY 				= 5;
 		
-		int NUMBER_CLIENTS 				= 3;
+		int NUMBER_CLIENTS 				= 5;
 		int NUMBER_PATIENTS_PER_CLIENT	= 2;
 		
 		centralAgent(NUMBER_TAXIS);

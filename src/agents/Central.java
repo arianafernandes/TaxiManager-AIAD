@@ -65,17 +65,36 @@ public class Central extends Agent { // taxis
 					if (capTaxi >= nPessoasPedido) {
 						allTaxis.put(Integer.parseInt(time), msg.getSender());
 					}
+					else{
+						ACLMessage respostaL = new ACLMessage(ACLMessage.REJECT_PROPOSAL);
+						respostaL.addReceiver(msg.getSender());
+						
+						System.out.println(msg.getSender().getLocalName()
+								+ " Não precisa de se deslocar. O seu taxi não tem espaço para o numero de passageiros.");
+						System.out.println("-----------");
+						send(respostaL);
+					}
+				}
+				else{
+					ACLMessage respostaL = new ACLMessage(ACLMessage.REJECT_PROPOSAL);
+					respostaL.addReceiver(msg.getSender());
+					
+					System.out.println(msg.getSender().getLocalName()
+							+ " Não precisa de se deslocar. O seu taxi ja está ocupado.");
+					System.out.println("-----------");
+					send(respostaL);
 				}
 			
 				if (countTaxis == nTaxis) {	
 					if (!allTaxis.isEmpty()) {
+						//informa o melhor taxi para efectuar o serviço
 						ACLMessage respostaW = new ACLMessage(ACLMessage.ACCEPT_PROPOSAL);
 						respostaW.addReceiver(allTaxis.get(allTaxis.firstKey()));
 						System.out.println(myAgent.getLocalName() + ": " + allTaxis.get(allTaxis.firstKey()).getLocalName() + " efectue o serviço.");
 						respostaW.setContent(nPessoas);
 						send(respostaW);
 						
-						//Informa o melhor Taxi para efetuar o pedido
+						//Informa o client
 						ACLMessage inform = new ACLMessage(ACLMessage.INFORM);
 						String taxiResponsavel = allTaxis.get(allTaxis.firstKey()).getLocalName();
 						inform.setContent(taxiResponsavel);
@@ -90,6 +109,7 @@ public class Central extends Agent { // taxis
 						for(int key : allTaxis.keySet()) {
 							ACLMessage respostaL = new ACLMessage(ACLMessage.REJECT_PROPOSAL);
 							respostaL.addReceiver(allTaxis.get(key));
+							
 							System.out.println(allTaxis.get(key).getLocalName()
 									+ " Não precisa de se deslocar. O cliente está atendido.");
 							respostaL.setContent(allTaxis.get(key).getLocalName()
@@ -98,13 +118,16 @@ public class Central extends Agent { // taxis
 						}
 						allTaxis.clear();
 					}
+					if(allTaxis.isEmpty()){
+						System.out.println(myAgent.getLocalName() + ": Desculpe, atualmente não há Taxis.");
+					}
 				}
 			}
 
 			if (msg.getPerformative() == ACLMessage.REFUSE) {
 				ACLMessage msg2 = new ACLMessage(ACLMessage.FAILURE);
 				msg2.addReceiver(clientInform);
-				System.out.println("[Central]  VAI ENVIAR PARA -> " + clientInform.getLocalName());
+				//System.out.println("[Central]  VAI ENVIAR PARA -> " + clientInform.getLocalName());
 				send(msg2);
 			}
 		}

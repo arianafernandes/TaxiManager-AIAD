@@ -41,6 +41,7 @@ public class Client extends Agent {
 				String nC = Integer.toString(nClientes);
 				msg.setContent(nC);
 				
+				System.out.println("---------------------------------");
 				System.out.println(a.getLocalName() + ": Quero um taxi para " + nClientes + " pessoa(s).");
 				send(msg);
 			} catch (FIPAException e) {

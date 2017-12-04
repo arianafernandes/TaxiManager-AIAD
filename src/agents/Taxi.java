@@ -122,7 +122,7 @@ public class Taxi extends Agent {
 			// significa que é o taxi que nao vai efectuar o serviço
 			if (msg.getPerformative() == ACLMessage.REJECT_PROPOSAL) {
 				//System.out.println("Depois resposta do taxi");
-				System.out.println(myAgent.getLocalName() + ": Ok Central, aguardo por novos clientes." + "\n");
+				System.out.println(myAgent.getLocalName() + ": Ok Central, aguardo por novos clientes.");
 			}
 
 		}
