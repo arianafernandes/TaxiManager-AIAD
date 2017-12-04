@@ -16,11 +16,40 @@ public class Central extends Agent { // taxis
 	public int nTotalTaxis;
 	public Agent[] allAgents;
 	public TreeMap<Double, AID> allTaxis = new TreeMap<Double, AID>();
-	public int price;
+	public double price;
+	public double balance;
 
 	public Central() {
 	}
 
+	public double calcDist(int xi,int xf, int yi, int yf){
+		double distF;
+		
+		int dx = xf - xi;
+		int dy = yf - yi;
+		int dx2 = dx * dx;
+		int dy2 = dy*dy;
+		
+		distF = Math.sqrt(dx2 + dy2);
+		return distF ;
+	}
+	
+	public void setPrice(double p){
+		this.price = p;
+	}
+	
+	public double getPrice(){
+		return this.price;
+	}
+	
+	public double getBalance(){
+		return this.balance;
+	}
+	
+	public void setBalance(double b){
+		this.balance = b;
+	}
+	
 	class CentralBehaviour extends SimpleBehaviour {
 		int nTaxis = 0;
 		int min = 50;
@@ -68,7 +97,6 @@ public class Central extends Agent { // taxis
 
 						System.out.println(msg.getSender().getLocalName()
 								+ " Não precisa de se deslocar. O seu taxi não tem espaço para o numero de passageiros.");
-						System.out.println("-----------");
 						send(respostaL);
 					}
 				} else {
@@ -77,7 +105,6 @@ public class Central extends Agent { // taxis
 
 					System.out.println(msg.getSender().getLocalName()
 							+ " Não precisa de se deslocar. O seu taxi ja está ocupado.");
-					System.out.println("-----------");
 					send(respostaL);
 				}
 
@@ -110,15 +137,23 @@ public class Central extends Agent { // taxis
 
 							System.out.println(allTaxis.get(key).getLocalName()
 									+ " Não precisa de se deslocar. O cliente está atendido.");
-							respostaL.setContent(allTaxis.get(key).getLocalName()
-									+ " Não precisa de se deslocar. O cliente está atendido.");
 							send(respostaL);
 
 						}
-
-						allTaxis.clear();
 					}
+
+					else{
+						System.out.println(myAgent.getLocalName() + ": Desculpe, atualmente não ha taxis.");
+						ACLMessage refuse = new ACLMessage(ACLMessage.REFUSE);
+						refuse.addReceiver(clientInform);
+						// System.out.println(inform);
+						send(refuse);
+					}
+
+					allTaxis.clear();
+
 				}
+
 			}
 
 			if (msg.getPerformative() == ACLMessage.REFUSE) {
@@ -150,6 +185,16 @@ public class Central extends Agent { // taxis
 				this.nPessoas = parts[0];
 				String xi = parts[1];
 				String yi = parts[2];//
+				//String xf = parts[3];
+				//String yf = parts[4];
+				//int xfi = Integer.parseInt(xf);
+				//int yfi = Integer.parseInt(yf);
+				int xii = Integer.parseInt(xi);
+				int yii = Integer.parseInt(yi);
+				
+				//setPrice(calcDist(xii,yii,xfi,yfi));
+				//setBalance(getBalance() + getPrice());
+				
 
 				System.out.println(myAgent.getLocalName() + ": O " + msg.getSender().getLocalName()
 						+ " quer um Taxi para " + nPessoas + " pessoa(s). Taxis qual o vosso tempo para o sitio " + xi

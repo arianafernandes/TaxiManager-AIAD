@@ -82,6 +82,7 @@ public class Client extends Agent {
 			if(msg.getPerformative() == ACLMessage.REFUSE){
 				System.out.println(myAgent.getLocalName() + ": OK. Dentro de minutos faço novo pedido.");
 			}
+							
 			if(msg.getPerformative() == ACLMessage.FAILURE){
 				System.out.println("FAILURE");
 			}
