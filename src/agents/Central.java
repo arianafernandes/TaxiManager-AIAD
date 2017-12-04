@@ -96,7 +96,7 @@ public class Central extends Agent { // taxis
 						respostaL.addReceiver(msg.getSender());
 
 						System.out.println(msg.getSender().getLocalName()
-								+ " Não precisa de se deslocar. O seu taxi não tem espaço para o numero de passageiros.");
+								+ ": Não precisa de se deslocar. O seu taxi não tem espaço para o numero de passageiros.");
 						send(respostaL);
 					}
 				} else {
@@ -104,7 +104,7 @@ public class Central extends Agent { // taxis
 					respostaL.addReceiver(msg.getSender());
 
 					System.out.println(msg.getSender().getLocalName()
-							+ " Não precisa de se deslocar. O seu taxi ja está ocupado.");
+							+ ": Não precisa de se deslocar. O seu taxi ja está ocupado.");
 					send(respostaL);
 				}
 
@@ -126,7 +126,11 @@ public class Central extends Agent { // taxis
 						// System.out.println(inform);
 						send(inform);
 						this.countTaxis = 0;
-
+						
+						setBalance(getBalance() + getPrice());
+						//System.out.println("[Price]: " + getPrice());
+						//System.out.println("[Balance]: " + getBalance());
+						
 						allTaxis.remove(allTaxis.firstKey());
 
 						// Avisa todos os Taxis disponiveis a responder ao
@@ -136,7 +140,7 @@ public class Central extends Agent { // taxis
 							respostaL.addReceiver(allTaxis.get(key));
 
 							System.out.println(allTaxis.get(key).getLocalName()
-									+ " Não precisa de se deslocar. O cliente está atendido.");
+									+ ": Não precisa de se deslocar. O cliente está atendido.");
 							send(respostaL);
 
 						}
@@ -185,15 +189,15 @@ public class Central extends Agent { // taxis
 				this.nPessoas = parts[0];
 				String xi = parts[1];
 				String yi = parts[2];//
-				//String xf = parts[3];
-				//String yf = parts[4];
-				//int xfi = Integer.parseInt(xf);
-				//int yfi = Integer.parseInt(yf);
+				String xf = parts[3];
+				String yf = parts[4];
+				int xfi = Integer.parseInt(xf);
+				int yfi = Integer.parseInt(yf);
 				int xii = Integer.parseInt(xi);
 				int yii = Integer.parseInt(yi);
 				
-				//setPrice(calcDist(xii,yii,xfi,yfi));
-				//setBalance(getBalance() + getPrice());
+				setPrice((calcDist(xii,yii,xfi,yfi) * 1.59));
+				
 				
 
 				System.out.println(myAgent.getLocalName() + ": O " + msg.getSender().getLocalName()
@@ -220,6 +224,7 @@ public class Central extends Agent { // taxis
 		if (args != null) {
 			// Extracting the integer.
 			this.nTotalTaxis = Integer.parseInt((String) args[0]);
+			this.balance = 0;
 		}
 		// regista agente no DF
 		DFAgentDescription dfd = new DFAgentDescription();

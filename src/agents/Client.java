@@ -21,19 +21,17 @@ public class Client extends Agent {
 	
 	public Client() {
 	}
+	//inicia todas as variaveis  do cliente
+	private void setClientProperties() {
+		Random r = new Random();
+		this.xi = Math.abs(r.nextInt()) % 20;
+		this.yi = Math.abs(r.nextInt()) % 20;
+		this.xf = Math.abs(r.nextInt()) % 20;
+		this.yf = Math.abs(r.nextInt()) % 20;
+		this.nClientes = (Math.abs(r.nextInt()) % 4 + 1);
 		
-	public double calcDist(int xi,int xf, int yi, int yf){
-		double distF;
-		
-		int dx = xf - xi;
-		int dy = yf - yi;
-		int dx2 = dx * dx;
-		int dy2 = dy*dy;
-		
-		distF = Math.sqrt(dx2 + dy2);
-		return distF ;
 	}
-
+		
 	// client behaviour é one shot behaviour pois o agent so tem um
 	// comportamento que é pedir o taxi
 	class ClientBehaviour extends OneShotBehaviour {
@@ -59,7 +57,9 @@ public class Client extends Agent {
 				String nC = Integer.toString(nClientes);
 				String xiS = Integer.toString(xi);
 				String yiS = Integer.toString(yi);
-				msg.setContent(nC + "," + xiS + "," + yiS);
+				String xfS = Integer.toString(xf);
+				String yfS = Integer.toString(yf);
+				msg.setContent(nC + "," + xiS + "," + yiS + "," + xfS + "," + yfS);
 				
 				System.out.println("---------------------------------");
 				System.out.println(a.getLocalName() + ": Quero um taxi para " + nClientes + " pessoa(s) do sitio " + 
@@ -94,14 +94,9 @@ public class Client extends Agent {
 		Object[] args = getArguments();
 		if (args != null) {
 			// Extracting the integer.
-			this.nClientes = Integer.parseInt((String) args[0]);
-			Random r = new Random();
-			this.xi = Math.abs(r.nextInt()) % 6;
-			this.yi = Math.abs(r.nextInt()) % 6;
-			this.xf = Math.abs(r.nextInt()) % 6;
-			this.yf = Math.abs(r.nextInt()) % 6;
+			//this.nClientes = Integer.parseInt((String) args[0]);
 		}
-		
+		setClientProperties();
 		// regista agente no DF
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());
@@ -119,4 +114,5 @@ public class Client extends Agent {
 		addBehaviour(b);
 
 	}
+
 }

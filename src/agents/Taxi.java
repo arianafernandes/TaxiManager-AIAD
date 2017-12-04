@@ -108,12 +108,12 @@ public class Taxi extends Agent {
 
 					String av;
 					if (getAvailable() == 1) {
-						av = "Disponivel";
+						av = "disponivel";
 					} else {
-						av = "Não disponivel";
+						av = "indisponivel";
 					}
-					System.out.println(agentName + ": estou a " + timeS + " minutos do " + msgSender + ". Tenho "
-							+ cap + " lugar(es) livre(s) " + "E estou " + av);
+					System.out.println(agentName + ": estou a " + String.format( "%.2f", time) + " minutos do " + msgSender + ". Tenho "
+							+ cap + " lugar(es) livre(s) " + "e estou " + av);
 					
 					send(proposta);
 				} catch (FIPAException e) {
@@ -165,8 +165,8 @@ public class Taxi extends Agent {
 			setCapacity(val);
 			setAvalable(1);
 			Random r = new Random();
-			this.x = Math.abs(r.nextInt()) % 6;
-			this.y = Math.abs(r.nextInt()) % 6;
+			this.x = Math.abs(r.nextInt()) % 20;
+			this.y = Math.abs(r.nextInt()) % 20;
 		}
 		
 		
