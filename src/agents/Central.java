@@ -23,104 +23,59 @@ public class Central extends Agent { // taxis
 	class CentralBehaviour extends SimpleBehaviour {
 		int nTaxis = 0;
 		int min = 50;
+		int NClients;
+		int countTaxis = 0;
 		AID taxiWinner;
+		AID clientInform;
 		Agent taxiW;
 		Agent myAgent;
-		AID clientInform;
-		int NClients;
 		String nPessoas;
-		int countTaxis = 0;
-
-		// construtor do behaviour
+		
 		public CentralBehaviour(Agent a) {
 			super(a);
 			myAgent = a;
 		}
 
-		// método action
 		public void action() {
-
-			// ler a caixa de correio
+			// LER CAIXA DO CORREIO
 			ACLMessage msg = blockingReceive();
 
-			// PEDIDO DO CLIENTE
-			// se receber uma mensagem do tipo request(do cliente)
+			// PEDIDO [REQUEST] DO CLIENTE 
 			if (msg.getPerformative() == ACLMessage.REQUEST) {
-
 				if (nTotalTaxis != 0) {
-					DFAgentDescription template = new DFAgentDescription();
-					ServiceDescription taxi = new ServiceDescription();
-					taxi.setType("Taxi");
-					template.addServices(taxi);
-
-					try {
-						// procra todos os taxis
-						// result sao todos os taxis
-						DFAgentDescription[] result = DFService.search(myAgent, template);
-
-						// ENVIA MENSAGENS AOS TAXIS
-						// envia uma mensagem do tipo cfp para todos os taxis
-						ACLMessage pedido = new ACLMessage(ACLMessage.CFP);
-						nTaxis = result.length;
-						for (int i = 0; i < result.length; ++i) {
-							pedido.addReceiver(result[i].getName());
-						}
-						nPessoas = msg.getContent();
-						System.out.println(myAgent.getLocalName() + ": O " + msg.getSender().getLocalName()
-								+ " quer um Taxi para " + msg.getContent() + " pessoa(s). Taxis qual o vosso tempo? ");
-						System.out.println("A aguardar resposta dos taxis...");
-						clientInform = msg.getSender();
-						pedido.setContent(msg.getSender().getLocalName());
-						send(pedido);
-
-					} catch (FIPAException e) {
-						e.printStackTrace();
-					}
+					callAllTaxis(msg);
 				} else {
 					System.out.println(myAgent.getLocalName() + ": Desculpe, atualmente não há Taxis.");
 				}
 
 			}
 
-			// RESPOSTA DO TAXI
-			// se receber uma mensagem do tipo propose(do taxi)
+			// RESPOSTA [PROPOSTA] DO TAXI
 			if (msg.getPerformative() == ACLMessage.PROPOSE) {
-		
-				this.countTaxis++;
 				String[] parts = msg.getContent().split(",");
 				String time = parts[0];
 				String avaliable = parts[1];
 				String cap = parts[2];//
-
 				int nPessoasPedido = Integer.parseInt(nPessoas);
 				int capTaxi = Integer.parseInt(cap);
+				//variavel que garante que recebemos pedidos de TODOS os Taxis
+				this.countTaxis++;
 				
-				// if p ver se esta avaliable
-				// adiciona a Taxi que enviou proposta na lista 
-				// desta forma temos acesso a TODOS os taxis que enviaram proposta
-				// sem array so era possivel aceder à ultima proposta [ERRADO]
-				//quando todos os taxis responderem ao pedido da central podemos continuar
 				if (avaliable.equals("1")) {					
-					
 					if (capTaxi >= nPessoasPedido) {
-						
 						allTaxis.put(Integer.parseInt(time), msg.getSender());
 					}
 				}
-						
-				if (countTaxis == nTaxis) {
-						
+			
+				if (countTaxis == nTaxis) {	
 					if (!allTaxis.isEmpty()) {
 						ACLMessage respostaW = new ACLMessage(ACLMessage.ACCEPT_PROPOSAL);
-						
-						// System.out.println("taxi winner " +
-						// taxiWinner);
 						respostaW.addReceiver(allTaxis.get(allTaxis.firstKey()));
 						System.out.println(myAgent.getLocalName() + ": " + allTaxis.get(allTaxis.firstKey()).getLocalName() + " efectue o serviço.");
 						respostaW.setContent(nPessoas);
-
 						send(respostaW);
-
+						
+						//Informa o melhor Taxi para efetuar o pedido
 						ACLMessage inform = new ACLMessage(ACLMessage.INFORM);
 						String taxiResponsavel = allTaxis.get(allTaxis.firstKey()).getLocalName();
 						inform.setContent(taxiResponsavel);
@@ -131,6 +86,7 @@ public class Central extends Agent { // taxis
 						
 						allTaxis.remove(allTaxis.firstKey());
 						
+						//Avisa todos os Taxis disponiveis a responder ao CLiente que já não é necessario
 						for(int key : allTaxis.keySet()) {
 							ACLMessage respostaL = new ACLMessage(ACLMessage.REJECT_PROPOSAL);
 							respostaL.addReceiver(allTaxis.get(key));
@@ -140,31 +96,49 @@ public class Central extends Agent { // taxis
 									+ " Não precisa de se deslocar. O cliente está atendido.");
 							send(respostaL);
 						}
-						
 						allTaxis.clear();
 					}
 				}
 			}
 
 			if (msg.getPerformative() == ACLMessage.REFUSE) {
-				//System.out.println("[Central]  ESPERAR");
 				ACLMessage msg2 = new ACLMessage(ACLMessage.FAILURE);
 				msg2.addReceiver(clientInform);
 				System.out.println("[Central]  VAI ENVIAR PARA -> " + clientInform.getLocalName());
-				//msg2.setContent("[Central]  CANCELA");
 				send(msg2);
-				//System.out.println("[Central] ENVIOUUUU");
 			}
-			/*
-			 * else{ ACLMessage inform = new ACLMessage(ACLMessage.REFUSE);
-			 * inform.setContent(myAgent.getLocalName() +
-			 * ": Atualmente não há taxis. Efetue novo pedido dentro de minutos.\n"
-			 * ); System.out.println(inform.getContent());
-			 * inform.addReceiver(clientInform); send(inform); }
-			 */
 		}
+		
+		public void callAllTaxis(ACLMessage msg){
+			DFAgentDescription template = new DFAgentDescription();
+			ServiceDescription taxi = new ServiceDescription();
+			taxi.setType("Taxi");
+			template.addServices(taxi);
 
-		// método done
+			try {
+				//PROCURA TODOS OS TAXIS
+				DFAgentDescription[] result = DFService.search(myAgent, template);
+
+				// ENVIA MENSAGENS AOS TAXIS DO TIPO CFP
+				ACLMessage pedido = new ACLMessage(ACLMessage.CFP);
+				nTaxis = result.length;
+				for (int i = 0; i < result.length; ++i) {
+					pedido.addReceiver(result[i].getName());
+				}
+				nPessoas = msg.getContent();
+				System.out.println(myAgent.getLocalName() + ": O " + msg.getSender().getLocalName()
+						+ " quer um Taxi para " + msg.getContent() + " pessoa(s). Taxis qual o vosso tempo? ");
+				System.out.println("A aguardar resposta dos taxis...");
+				clientInform = msg.getSender();
+				pedido.setContent(msg.getSender().getLocalName());
+				send(pedido);
+
+			} catch (FIPAException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		// METODO DONE
 		public boolean done() {
 			return false;
 		}
@@ -176,7 +150,6 @@ public class Central extends Agent { // taxis
 			// Extracting the integer.
 			this.nTotalTaxis = Integer.parseInt((String) args[0]);
 		}
-
 		// regista agente no DF
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());
