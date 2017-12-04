@@ -31,10 +31,10 @@ public class TaxiManager {
 	}
 	
 	public static void buildMap() throws StaleProxyException, InterruptedException{	
-		int NUMBER_TAXIS 				= 9;
+		int NUMBER_TAXIS 				= 30;
 		int TAXI_CAPACITY 				= 4;
 		
-		int NUMBER_CLIENTS 				= 9;
+		int NUMBER_CLIENTS 				= 50;
 		int NUMBER_PATIENTS_PER_CLIENT	= 2;
 		
 		centralAgent(NUMBER_TAXIS);
