@@ -178,8 +178,6 @@ public class Central extends Agent { // taxis
 				send(msg2);
 			}
 			
-				
-			
 		}
 
 		public void callAllTaxis(ACLMessage msg) {

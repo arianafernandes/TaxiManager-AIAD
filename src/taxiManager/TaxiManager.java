@@ -62,7 +62,13 @@ public class TaxiManager {
 		printDisplay();
 		centralAgent(NUMBER_TAXIS, SHARED);
 		taxiAgent(NUMBER_TAXIS,TAXI_CAPACITY);
-		clientAgent(NUMBER_CLIENTS, NUMBER_PATIENTS_PER_CLIENT);
+		if(NUMBER_CLIENTS != 0){
+			clientAgent(NUMBER_CLIENTS, NUMBER_PATIENTS_PER_CLIENT);
+		}
+		else{
+			System.out.println("Atualmente nao ha clientes e por isso nao ha pedidos em curso.");
+		}
+		
 	}
 
 	public static void centralAgent(int numberTaxis, int shared) throws StaleProxyException{
