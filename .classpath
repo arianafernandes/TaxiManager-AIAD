@@ -3,5 +3,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="C:/Users/arian/Documents/JADE-all-4.5.0/JADE-bin-4.5.0/jade/lib/jade.jar"/>
+	<classpathentry kind="lib" path="D:/RepastSimphony-2.5/batch_runner.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

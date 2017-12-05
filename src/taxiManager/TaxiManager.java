@@ -1,6 +1,5 @@
 package taxiManager;
 
-import java.lang.Object;
 import java.util.Scanner;
 
 import jade.core.Profile;
@@ -49,9 +48,11 @@ public class TaxiManager {
 		System.out.println("###############################################");
 		System.out.println("Introduza o numero que desejar pf.");
 		System.out.println();
-		System.out.print("Quantos Clientes: " );
+		System.out.print("Quantos Clientes?" );
+		System.out.println();
 		NUMBER_CLIENTS = input.nextInt();
-		System.out.print("Quantos Taxis: " );
+		System.out.print("Quantos Taxis?" );
+		System.out.println();
 		NUMBER_TAXIS = input.nextInt();
 		System.out.print("Deseja uma central Partilhada? 1(Sim) 0(Nao). " );
 		System.out.println();
@@ -60,14 +61,20 @@ public class TaxiManager {
 	
 	public static void buildMap() throws StaleProxyException, InterruptedException{			
 		printDisplay();
-		centralAgent(NUMBER_TAXIS, SHARED);
-		taxiAgent(NUMBER_TAXIS,TAXI_CAPACITY);
-		if(NUMBER_CLIENTS != 0){
-			clientAgent(NUMBER_CLIENTS, NUMBER_PATIENTS_PER_CLIENT);
+		if(SHARED == 1 || SHARED == 0){
+			centralAgent(NUMBER_TAXIS, SHARED);
+			taxiAgent(NUMBER_TAXIS,TAXI_CAPACITY);
+			if(NUMBER_CLIENTS != 0){
+				clientAgent(NUMBER_CLIENTS, NUMBER_PATIENTS_PER_CLIENT);
+			}
+			else{
+				System.out.println("Atualmente nao ha clientes e por isso nao ha pedidos em curso.");
+			}
 		}
 		else{
-			System.out.println("Atualmente nao ha clientes e por isso nao ha pedidos em curso.");
+			System.out.println("Nao inseriu uma opcao valida para central partilhada (0 ou 1).");
 		}
+		
 		
 	}
 
