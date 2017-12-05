@@ -81,6 +81,13 @@ public class Central extends Agent { // taxis
 				if (nTotalTaxis != 0) {
 					callAllTaxis(msg);
 				}
+				else{
+				System.out.println(myAgent.getLocalName() + ": Desculpe, atualmente não ha taxis.");
+				ACLMessage refuse = new ACLMessage(ACLMessage.REFUSE);
+				refuse.addReceiver(clientInform);
+				// System.out.println(inform);
+				send(refuse);
+				}
 			}
 
 			// RESPOSTA [PROPOSTA] DO TAXI
@@ -143,8 +150,8 @@ public class Central extends Agent { // taxis
 							ACLMessage respostaL = new ACLMessage(ACLMessage.REJECT_PROPOSAL);
 							respostaL.addReceiver(allTaxis.get(key));
 
-							System.out.println(allTaxis.get(key).getLocalName()
-									+ ": Não precisa de se deslocar. O cliente está atendido.");
+							System.out.println(myAgent.getLocalName() + ": " + allTaxis.get(key).getLocalName()
+									+ " Não precisa de se deslocar. O cliente está atendido.");
 							send(respostaL);
 
 						}
@@ -170,6 +177,9 @@ public class Central extends Agent { // taxis
 				// clientInform.getLocalName());
 				send(msg2);
 			}
+			
+				
+			
 		}
 
 		public void callAllTaxis(ACLMessage msg) {

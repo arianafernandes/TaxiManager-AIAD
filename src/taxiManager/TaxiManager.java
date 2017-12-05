@@ -40,19 +40,21 @@ public class TaxiManager {
 	public static void printDisplay(){
 		
 		Scanner input = new Scanner(System.in);  // Reading from System.in
-		System.out.println("Enter a number: ");
+	
 		
 		System.out.println("###############################################");
 		System.out.println("#####                                    #####");
-		System.out.println("#####     | BEM VENDO TAXI MANAGER |     #####");
+		System.out.println("#####     | BEM VINDO TAXI MANAGER |     #####");
 		System.out.println("#####                                    #####");
 		System.out.println("###############################################");
+		System.out.println("Introduza o numero que desejar pf.");
 		System.out.println();
 		System.out.print("Quantos Clientes: " );
 		NUMBER_CLIENTS = input.nextInt();
 		System.out.print("Quantos Taxis: " );
 		NUMBER_TAXIS = input.nextInt();
-		System.out.print("Deseja uma central Partilhada 1(Yes) 0(No): " );
+		System.out.print("Deseja uma central Partilhada? 1(Sim) 0(Nao). " );
+		System.out.println();
 		SHARED = input.nextInt();
 	}
 	
