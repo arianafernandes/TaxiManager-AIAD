@@ -1,15 +1,46 @@
 package agents;
 
-import java.util.*;
-import jade.core.*;
-import jade.core.behaviours.SimpleBehaviour;
-import jade.domain.DFService;
+
+//import java.io.BufferedReader;
+//import java.io.FileReader;
+//import java.io.IOException;
+//import java.util.ArrayList;
+//import java.util.Random;
+//import java.util.TreeMap;
+//
+//import agents.Central;
+//import agents.Taxi;
+//import jade.core.AID;
+//import jade.core.Profile;
+//import jade.core.ProfileImpl;
+//import jade.domain.FIPAException;
+//import jade.domain.FIPAAgentManagement.DFAgentDescription;
+//import jade.domain.FIPAAgentManagement.ServiceDescription;
+//import jade.lang.acl.ACLMessage;
+//import jade.wrapper.StaleProxyException;
+
+//import sajas.sim.repasts.RepastSLauncher;
+//import sajas.wrapper.ContainerController;
+//import sajas.core.Agent;
+//import sajas.core.Runtime;
+//import sajas.core.behaviours.SimpleBehaviour;
+//import sajas.domain.DFService;
+
+
+import java.util.TreeMap;
+
+import sajas.core.Agent;
+import sajas.core.behaviours.SimpleBehaviour;
+import sajas.domain.DFService;
+import jade.core.AID;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 
-@SuppressWarnings("serial")
+
+
+@SuppressWarnings({ "serial"})
 public class Central extends Agent { // taxis
 
 	// total taxis from taxiManager
@@ -21,6 +52,11 @@ public class Central extends Agent { // taxis
 	public int checked_shared;
 
 	public Central() {
+	}
+	public Central(int numberTaxis,int shared) {
+		System.out.println("Cheguei aqui central " + numberTaxis);
+		this.nTotalTaxis = numberTaxis;
+		this.checked_shared = shared;
 	}
 
 	public double calcDist(int xi,int xf, int yi, int yf){
@@ -229,15 +265,18 @@ public class Central extends Agent { // taxis
 			return false;
 		}
 	}
-
+	
+	@Override
 	protected void setup() {
-		Object[] args = getArguments();
-		if (args != null) {
+		//Object[] args = getArguments();
+		/*if (args != null) {
 			// Extracting the integer.
 			this.nTotalTaxis = Integer.parseInt((String) args[0]);
 			this.balance = 0;
 			this.checked_shared = Integer.parseInt((String) args[1]);
-		}
+		}*/
+		super.setup();
+		System.out.println("Cheguei aqui central " + this.nTotalTaxis);
 		// regista agente no DF
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());

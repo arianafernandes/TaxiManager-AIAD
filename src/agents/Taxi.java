@@ -1,16 +1,34 @@
 package agents;
 
+
+//import java.util.ArrayList;
+//import java.util.List;
+//import java.util.Random;
+//
+//import jade.core.AID;
+//import jade.domain.FIPAException;
+//import jade.domain.FIPAAgentManagement.DFAgentDescription;
+//import jade.domain.FIPAAgentManagement.ServiceDescription;
+//import jade.lang.acl.ACLMessage;
+//import sajas.core.Agent;
+//import sajas.core.Runtime;
+//import sajas.core.behaviours.CyclicBehaviour;
+//import sajas.core.behaviours.SimpleBehaviour;
+//import sajas.core.behaviours.TickerBehaviour;
+//import sajas.domain.DFService;
+
+
 import java.util.Random;
 
-import jade.core.Agent;
-import jade.core.behaviours.SimpleBehaviour;
-import jade.domain.DFService;
+import sajas.core.Agent;
+import sajas.core.behaviours.SimpleBehaviour;
+import sajas.domain.DFService;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({ "serial", "unused"})
 public class Taxi extends Agent {
 
 	public int available;
@@ -20,6 +38,10 @@ public class Taxi extends Agent {
 
 	public Taxi() {
 
+	}
+	public Taxi(int cap) {
+		System.out.println("Cheguei aqui taxi " + cap);
+		this.capacity = cap;
 	}
 
 	public double calcDist(int xi, int xf, int yi, int yf) {
@@ -161,17 +183,17 @@ public class Taxi extends Agent {
 	}
 
 	protected void setup() {
-		Object[] args = getArguments();
-		if (args != null) {
-			// Extracting the integer.
-			int val = Integer.parseInt((String) args[0]);
-			setCapacity(val);
-			setAvalable(1);
-			Random r = new Random();
-			this.x = Math.abs(r.nextInt()) % 20;
-			this.y = Math.abs(r.nextInt()) % 20;
-		}
-
+		//Object[] args = getArguments();
+//		if (args != null) {
+//			// Extracting the integer.
+//			int val = Integer.parseInt((String) args[0]);
+//			setCapacity(val);
+//			setAvalable(1);
+//			Random r = new Random();
+//			this.x = Math.abs(r.nextInt()) % 20;
+//			this.y = Math.abs(r.nextInt()) % 20;
+//		}
+		super.setup();
 		// regista agente no DF
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());
