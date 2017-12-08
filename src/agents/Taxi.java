@@ -64,6 +64,23 @@ public class Taxi extends Agent {
     public int getCapacity() {
         return capacity;
     }
+    
+    public void setX(int x) {
+        this.x = x;
+    }
+ 
+    public void setY(int y) {
+        this.y = y;
+    }
+    
+    public int getX() {
+        return x;
+    }
+    
+    public int getY() {
+        return y;
+    }
+    
  
     // client behaviour é simple behaviour
     class TaxiBehaviour extends SimpleBehaviour {
@@ -138,7 +155,16 @@ public class Taxi extends Agent {
                     String[] parts = msg.getContent().split(",");
                     int nP = Integer.parseInt(parts[0]);
                     int checked_shared = Integer.parseInt(parts[1]);
- 
+                    int destinoX = Integer.parseInt(parts[2]);
+                    int destinoY = Integer.parseInt(parts[3]);
+                     
+                    System.out.println("X inicial" + getX());
+                    System.out.println("Y inicial" + getY());
+                    setX(destinoX);
+                    setY(destinoY);
+                    System.out.println("X final" + getX());
+                    System.out.println("Y final" + getY());
+                    System.out.println(space + "space - grid" + grid);
                     // System.out.println("CENTRAL envia resposta para o taxi que
                     // vai efectuar o serviço.");
                     //VERIFICAÇÃO DE SER TAXI PARTILHADO OU NÃO

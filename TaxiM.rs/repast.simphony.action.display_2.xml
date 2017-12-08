@@ -8,7 +8,7 @@
     </entry>
     <entry>
       <string>agents.Client</string>
-      <string>repast.simphony.visualizationOGL2D.DefaultStyleOGL2D</string>
+       <string>repast.simphony.visualizationOGL2D.DefaultStyleOGL2D</string>
     </entry>
     <entry>
       <string>MyLauncher</string>
@@ -16,7 +16,7 @@
     </entry>
     <entry>
       <string>agents.Taxi</string>
-      <string>repast.simphony.visualizationOGL2D.DefaultStyleOGL2D</string>
+     <string>repast.simphony.visualizationOGL2D.DefaultStyleOGL2D</string>
     </entry>
   </styles>
   <editedStyles>
@@ -26,7 +26,7 @@
     </entry>
     <entry>
       <string>agents.Client</string>
-      <null/>
+      <string>agents.Client.style_3.xml</string>
     </entry>
     <entry>
       <string>MyLauncher</string>
@@ -34,7 +34,7 @@
     </entry>
     <entry>
       <string>agents.Taxi</string>
-      <null/>
+     <string>agents.Taxi.style_3.xml</string>
     </entry>
   </editedStyles>
   <netStyles/>
@@ -55,11 +55,15 @@
   <layerOrder>
     <entry>
       <string>agents.Central</string>
-      <int>2</int>
+      <int>3</int>
     </entry>
     <entry>
       <string>agents.Client</string>
       <int>1</int>
+      <entry>
+                <string>COLOR</string>
+                <int>-16777216</int>
+              </entry>
     </entry>
     <entry>
       <string>MyLauncher</string>

@@ -148,6 +148,13 @@ public class Central extends Agent { // taxis
                     // if (countTaxis == nTaxis) {
                     if (respostasDeTaxisParaPedidosInProgress.get(msg
                             .getConversationId()) == 0) {
+                    
+                    	 String[] parts2 = pedidosInProgress.get(msg.getConversationId()).getContent().split(",");
+                         this.nPessoas = parts2[0];
+                         String xi = parts2[1];
+                         String yi = parts2[2];
+                         int xii = Integer.parseInt(xi);
+                         int yii = Integer.parseInt(yi);
                         respostasDeTaxisParaPedidosInProgress.remove(msg
                                 .getConversationId());
                         if (!allTaxis.isEmpty()) {
@@ -163,7 +170,7 @@ public class Central extends Agent { // taxis
                                             .getSender().getLocalName()
                                     + " efectue o serviço.");
                             respostaW.setContent(nPessoas + ","
-                                    + getchecked_shared());
+                                    + getchecked_shared() + "," + xii + "," + yii);
                             send(respostaW);
  
                             // Informa o client

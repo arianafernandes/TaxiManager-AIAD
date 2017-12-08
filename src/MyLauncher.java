@@ -57,7 +57,8 @@ public class MyLauncher extends RepastSLauncher {
 	public Grid<Object> grid;
 	public Context<Object> context;
 	private Network<Object> network;
-
+	public Agent[] agents;
+	
 	@Override
 	public Context build(Context<Object> context) {
 		this.context = context;
@@ -91,7 +92,9 @@ public class MyLauncher extends RepastSLauncher {
 
 		int clientsCount = (Integer) params.getValue("number_clients");
 		for (int i = 0; i < clientsCount; i++) {
-			context.add(new Client(space, grid, i));
+			Client client = new Client(space, grid, i);
+			agents.
+			context.add(client);
 		}
 
 		for (Object obj : context) {
@@ -154,8 +157,7 @@ public class MyLauncher extends RepastSLauncher {
 			for (int i = 0; i < clientCount; i++) {
 				Client client = new Client(space, grid, clientCount);
 				context.add(client);
-				mainContainer.acceptNewAgent("[CLIENT " + i + "]", client)
-						.start();
+				mainContainer.acceptNewAgent("[CLIENT " + i + "]", client).start();
 
 			}
 		} catch (StaleProxyException e) {
