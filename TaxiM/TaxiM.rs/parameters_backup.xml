@@ -1,21 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <parameters>
 					<parameter name="randomSeed" displayName="Default Random Seed" type="int" 
-						defaultValue="__NULL__"
+						defaultValue="865736552" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
-				<parameter name="number_taxis" displayName="Taxis" type="int" 
+				<parameter name="Number_Taxis" displayName="Taxis" type="java.lang.String" 
 						defaultValue="5" 
-						isReadOnly="false" 
-						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
-									
-		/>
-			
-				<parameter name="number_clients" displayName="Clients" type="int" 
-						defaultValue="5" 
-						isReadOnly="false" 
+						isReadOnly="true" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>

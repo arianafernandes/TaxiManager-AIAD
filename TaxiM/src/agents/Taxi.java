@@ -2,6 +2,8 @@ package agents;
 
 import java.util.Random;
 
+import repast.simphony.space.continuous.ContinuousSpace;
+import repast.simphony.space.grid.Grid;
 import sajas.core.Agent;
 import sajas.core.behaviours.SimpleBehaviour;
 import sajas.domain.DFService;
@@ -17,14 +19,22 @@ public class Taxi extends Agent {
 	public int capacity;
 	public int x;
 	public int y;
+	ContinuousSpace<Object> space;
+	Grid<Object> grid;
+	
 
 	public Taxi() {
 
 	}
 
-	public Taxi(int avaliable, int capacity) {
+	public Taxi(ContinuousSpace<Object> space, Grid<Object> grid, int avaliable, int capacity) {
 		this.available = avaliable;
 		this.capacity = capacity;
+		Random r = new Random();
+		this.x = Math.abs(r.nextInt()) % 20;
+		this.y = Math.abs(r.nextInt()) % 20;
+		this.space = space;
+		this.grid = grid;
 	}
 
 	public double calcDist(int xi, int xf, int yi, int yf) {
@@ -82,46 +92,40 @@ public class Taxi extends Agent {
 					int xfi = Integer.parseInt(xf);
 					int yfi = Integer.parseInt(yf);
 
-					DFAgentDescription template = new DFAgentDescription();
-					ServiceDescription sd1 = new ServiceDescription();
-					sd1.setType("Central");
-					template.addServices(sd1);
+//					DFAgentDescription template = new DFAgentDescription();
+//					ServiceDescription sd1 = new ServiceDescription();
+//					sd1.setType("Central");
+//					template.addServices(sd1);
 
-					try {
-						DFAgentDescription[] result = DFService.search(myAgent, template);
-						// envia uma mensagem do tipo propose para a central
+					ACLMessage proposta = msg.createReply();
+					proposta.setPerformative(ACLMessage.PROPOSE);
 
-						ACLMessage proposta = new ACLMessage(ACLMessage.PROPOSE);
+//						for (int i = 0; i < result.length; ++i) {
+//							proposta.addReceiver(result[i].getName());
+//						}
 
-						for (int i = 0; i < result.length; ++i) {
-							proposta.addReceiver(result[i].getName());
-						}
+					String agentName = getAID().getLocalName();
+					// proposta do taxi para a central
 
-						String agentName = getAID().getLocalName();
-						// proposta do taxi para a central
+					double time = (calcDist(x, y, xfi, yfi) * 2);
 
-						double time = (calcDist(x, y, xfi, yfi) * 2);
+					String timeS = String.valueOf(time);
+					String avl = Integer.toString(getAvailable());
+					String cap = Integer.toString(getCapacity());
 
-						String timeS = String.valueOf(time);
-						String avl = Integer.toString(getAvailable());
-						String cap = Integer.toString(getCapacity());
+					String args = timeS + "," + avl + "," + cap;
+					proposta.setContent(args);
 
-						String args = timeS + "," + avl + "," + cap;
-						proposta.setContent(args);
-
-						String av;
-						if (getAvailable() == 1) {
-							av = "disponivel";
-						} else {
-							av = "indisponivel";
-						}
-						System.out.println(agentName + ": estou a " + String.format("%.2f", time) + " minutos do "
-								+ msgSender + ". Tenho " + cap + " lugar(es) livre(s) " + "e estou " + av);
-
-						send(proposta);
-					} catch (FIPAException e) {
-						e.printStackTrace();
+					String av;
+					if (getAvailable() == 1) {
+						av = "disponivel";
+					} else {
+						av = "indisponivel";
 					}
+					System.out.println(agentName + ": estou a " + String.format("%.2f", time) + " minutos do "
+							+ msgSender + ". Tenho " + cap + " lugar(es) livre(s) " + "e estou " + av);
+
+					send(proposta);
 
 				}
 
