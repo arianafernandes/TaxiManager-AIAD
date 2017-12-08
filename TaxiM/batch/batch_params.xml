@@ -1,3 +1,7 @@
-<?xml version="1.0"?>
+<?xml version="1.0" ?>
 <sweep runs="1">
+<parameter name="number_taxis" type="constant" constant_type="int" value="5">
+</parameter>
+<parameter name="number_clients" type="constant" constant_type="int" value="5">
+</parameter>
 </sweep>
