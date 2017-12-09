@@ -157,8 +157,13 @@ public class Central extends Agent { // taxis
                          this.nPessoas = parts2[0];
                          String xi = parts2[1];
                          String yi = parts2[2];
+                         String xf = parts2[3];
+                         String yf = parts2[4];
                          int xii = Integer.parseInt(xi);
-                         int yii = Integer.parseInt(yi);
+                         int yii = Integer.parseInt(yi);                       
+                         int xfi = Integer.parseInt(xf);
+                         int yfi = Integer.parseInt(yf);
+
                         respostasDeTaxisParaPedidosInProgress.remove(msg
                                 .getConversationId());
                         if (!allTaxis.isEmpty()) {
@@ -191,6 +196,7 @@ public class Central extends Agent { // taxis
                             send(inform);
                             // this.countTaxis = 0;
  
+                            setPrice((calcDist(xii, yii, xfi, yfi) * 1.59));
                             setBalance(getBalance() + getPrice());
                             System.out.println("[=Price=]: "
                                     + String.format("%.2f", getPrice()));
