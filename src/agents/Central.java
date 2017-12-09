@@ -1,7 +1,10 @@
 package agents;
  
 import java.util.*;
+
 import jade.core.*;
+import repast.simphony.space.continuous.ContinuousSpace;
+import repast.simphony.space.grid.Grid;
 import sajas.core.Agent;
 import sajas.core.behaviours.SimpleBehaviour;
 import sajas.domain.DFService;
@@ -20,13 +23,16 @@ public class Central extends Agent { // taxis
     public double price;
     public double balance;
     public int checked_shared;
- 
+    ContinuousSpace<Object> space;
+    Grid<Object> grid;
     public Central() {
     }
  
-    public Central(int nTotalTaxis, int checked_shared) {
+    public Central(int nTotalTaxis, int checked_shared, ContinuousSpace<Object> space, Grid<Object> grid) {
         this.nTotalTaxis = nTotalTaxis;
         this.checked_shared = checked_shared;
+        this.space = space;
+        this.grid = grid;
     }
  
     public double calcDist(int xi, int xf, int yi, int yf) {

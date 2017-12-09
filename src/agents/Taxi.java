@@ -84,7 +84,6 @@ public class Taxi extends Agent {
  
     // client behaviour é simple behaviour
     class TaxiBehaviour extends SimpleBehaviour {
-        private int n = 0;
         Agent myAgent;
  
         // construtor do behaviour

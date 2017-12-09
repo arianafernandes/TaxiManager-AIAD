@@ -2,10 +2,10 @@ package agents;
  
 import java.util.Random;
  
+
 import repast.simphony.space.continuous.ContinuousSpace;
 import repast.simphony.space.grid.Grid;
 import sajas.core.Agent;
-import sajas.core.behaviours.OneShotBehaviour;
 import sajas.core.behaviours.SimpleBehaviour;
 import sajas.domain.DFService;
 import jade.domain.FIPAException;
