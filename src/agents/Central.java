@@ -130,7 +130,7 @@ public class Central extends Agent { // taxis
                             ACLMessage respostaL = msg.createReply();
                             respostaL
                                     .setPerformative(ACLMessage.REJECT_PROPOSAL);
-                            // respostaL.addReceiver(msg.getSender());
+                            
  
                             System.out
                                     .println(myAgent.getLocalName()
@@ -142,11 +142,7 @@ public class Central extends Agent { // taxis
                     } else {
                         ACLMessage respostaL = msg.createReply();
                         respostaL.setPerformative(ACLMessage.REJECT_PROPOSAL);
-                        // respostaL.addReceiver(msg.getSender());
- 
-                        // System.out.println(myAgent.getLocalName() + ": " +
-                        // msg.getSender().getLocalName() +
-                        // " não precisa de se deslocar. O seu taxi ja está ocupado.");
+                      
                         send(respostaL);
                     }
                     // if (countTaxis == nTaxis) {
@@ -167,7 +163,9 @@ public class Central extends Agent { // taxis
                         respostasDeTaxisParaPedidosInProgress.remove(msg
                                 .getConversationId());
                         if (!allTaxis.isEmpty()) {
-                            // informa o melhor taxi para efectuar o serviço
+                            
+                        	
+                        	// INFORMA melhor [TAXI] PARA EFETUAR O PEDIDO
                             ACLMessage respostaW = allTaxis.get(
                                     allTaxis.firstKey()).createReply();
                             respostaW
@@ -191,10 +189,7 @@ public class Central extends Agent { // taxis
                                     .get(allTaxis.firstKey()).getSender()
                                     .getLocalName();
                             inform.setContent(taxiResponsavel);
-                            // inform.addReceiver(clientInform);
-                            // System.out.println(inform);
                             send(inform);
-                            // this.countTaxis = 0;
  
                             setPrice((calcDist(xii, yii, xfi, yfi) * 1.59));
                             setBalance(getBalance() + getPrice());

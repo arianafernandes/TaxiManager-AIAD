@@ -8,14 +8,21 @@
 		/>
 				
 				<parameter name="number_taxis" displayName="Taxis Count" type="int" 
-						defaultValue="5" 
+						defaultValue="1" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
 			
 				<parameter name="number_clients" displayName="Clients Count" type="int" 
-						defaultValue="5" 
+						defaultValue="2" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
+									
+		/>
+
+<parameter name="shared" displayName="Taxi Manager Shared (0/1)" type="int" 
+						defaultValue="1" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									

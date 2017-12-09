@@ -65,7 +65,7 @@ public class Taxi extends Agent {
         return capacity;
     }
     
-    public void setX(int x) {
+    public void setX(int x){
         this.x = x;
     }
  
@@ -167,6 +167,7 @@ public class Taxi extends Agent {
                     // System.out.println("CENTRAL envia resposta para o taxi que
                     // vai efectuar o serviço.");
                     //VERIFICAÇÃO DE SER TAXI PARTILHADO OU NÃO
+                    System.out.println(" ------ CAPACIDADE: " + capacity + " ----- AVAI: " + available);
                     setCapacity(getCapacity() - nP);
                     if (checked_shared == 1) {
                         if (capacity == 0) {
@@ -176,6 +177,7 @@ public class Taxi extends Agent {
                     else
                         setAvalable(0);
  
+         
                     System.out.println(myAgent.getLocalName() + ": Ok. Já vou buscar o Cliente.");
                 }
                 // se receber uma mensagem do tipo reject(da central)

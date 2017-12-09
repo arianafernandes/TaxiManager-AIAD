@@ -58,6 +58,7 @@ public class MyLauncher extends RepastSLauncher {
 	public Context<Object> context;
 	private Network<Object> network;
 	public Agent[] agents;
+	public int SHARED;
 	
 	@Override
 	public Context build(Context<Object> context) {
@@ -85,6 +86,9 @@ public class MyLauncher extends RepastSLauncher {
 						new SimpleGridAdder<Object>(), false, 50, 50));
 
 		Parameters params = RunEnvironment.getInstance().getParameters();
+		
+		SHARED  = (Integer) params.getValue("shared");
+		
 		int taxisCount = (Integer) params.getValue("number_taxis");
 		for (int i = 0; i < taxisCount; i++) {
 			context.add(new Taxi(space, grid, 1, 4));
@@ -143,7 +147,7 @@ public class MyLauncher extends RepastSLauncher {
 
 		Parameters params = RunEnvironment.getInstance().getParameters();
 		try {
-			Central central = new Central(1, 1);
+			Central central = new Central(1, SHARED);
 			mainContainer.acceptNewAgent("[CENTRAL]", central).start();
 
 			int taxiCount = (Integer) params.getValue("number_taxis");
@@ -157,6 +161,7 @@ public class MyLauncher extends RepastSLauncher {
 			for (int i = 0; i < clientCount; i++) {
 				Client client = new Client(space, grid, clientCount);
 				context.add(client);
+				Thread.sleep(50);
 				mainContainer.acceptNewAgent("[CLIENT " + i + "]", client).start();
 
 			}
