@@ -157,13 +157,13 @@ public class Taxi extends Agent {
                     int destinoX = Integer.parseInt(parts[2]);
                     int destinoY = Integer.parseInt(parts[3]);
                      
-                    System.out.println("X inicial" + getX());
-                    System.out.println("Y inicial" + getY());
+//                    System.out.println("X inicial" + getX());
+//                    System.out.println("Y inicial" + getY());
                     setX(destinoX);
                     setY(destinoY);
-                    System.out.println("X final" + getX());
-                    System.out.println("Y final" + getY());
-                    System.out.println(space + "space - grid" + grid);
+//                    System.out.println("X final" + getX());
+//                    System.out.println("Y final" + getY());
+//                    System.out.println(space + "space - grid" + grid);
                     // System.out.println("CENTRAL envia resposta para o taxi que
                     // vai efectuar o serviço.");
                     //VERIFICAÇÃO DE SER TAXI PARTILHADO OU NÃO
