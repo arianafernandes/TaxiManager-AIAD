@@ -82,7 +82,7 @@ public class Central extends Agent { // taxis
         Agent myAgent;
         String nPessoas;
  
-        // a chave destes maps é o AID do cliente stringuificado
+        // a chave destes maps ï¿½ o AID do cliente stringuificado
         TreeMap<String, ACLMessage> pedidosInProgress = new TreeMap<String, ACLMessage>();
         TreeMap<String, Integer> respostasDeTaxisParaPedidosInProgress = new TreeMap<String, Integer>();
  
@@ -104,7 +104,7 @@ public class Central extends Agent { // taxis
                         callAllTaxis(msg);
                     } else {
                         System.out.println(myAgent.getLocalName()
-                                + ": Desculpe, atualmente não ha taxis.");
+                                + ": Desculpe, atualmente nï¿½o ha taxis.");
                         ACLMessage refuse = msg.createReply();
                         refuse.setPerformative(ACLMessage.REFUSE);
                         // refuse.addReceiver(clientInform);
@@ -143,7 +143,7 @@ public class Central extends Agent { // taxis
                                     .println(myAgent.getLocalName()
                                             + ": "
                                             + msg.getSender().getLocalName()
-                                            + " não precisa de se deslocar. O seu taxi não tem espaço para o numero de passageiros.");
+                                            + " nï¿½o precisa de se deslocar. O seu taxi nï¿½o tem espaï¿½o para o numero de passageiros.");
                             send(respostaL);
                         }
                     } else {
@@ -182,7 +182,7 @@ public class Central extends Agent { // taxis
                                     + ": "
                                     + allTaxis.get(allTaxis.firstKey())
                                             .getSender().getLocalName()
-                                    + " efectue o serviço.");
+                                    + " efectue o serviï¿½o.");
                             respostaW.setContent(nPessoas + ","
                                     + getchecked_shared() + "," + xii + "," + yii);
                             send(respostaW);
@@ -197,8 +197,13 @@ public class Central extends Agent { // taxis
                                     .getLocalName();
                             inform.setContent(taxiResponsavel);
                             send(inform);
- 
-                            setPrice((calcDist(xii, yii, xfi, yfi) * 1.59));
+
+                            if (getchecked_shared() == 1){
+                                setPrice((calcDist(xii, yii, xfi, yfi) * 1.19));
+                            }
+                            else{
+                                setPrice((calcDist(xii, yii, xfi, yfi) * 1.59));
+                            }
                             setBalance(getBalance() + getPrice());
                             all.add((float) getBalance());
                             System.out.println("[=Price=]: "
@@ -209,7 +214,7 @@ public class Central extends Agent { // taxis
                             allTaxis.remove(allTaxis.firstKey());
  
                             // Avisa todos os Taxis disponiveis a responder ao
-                            // CLiente que já não é necessario
+                            // CLiente que jï¿½ nï¿½o ï¿½ necessario
                             for (Double key : allTaxis.keySet()) {
                                 ACLMessage respostaL = allTaxis.get(key)
                                         .createReply();
@@ -224,13 +229,13 @@ public class Central extends Agent { // taxis
                                                 + ": "
                                                 + allTaxis.get(key).getSender()
                                                         .getLocalName()
-                                                + " Não precisa de se deslocar. O cliente está atendido.");
+                                                + " Nï¿½o precisa de se deslocar. O cliente estï¿½ atendido.");
                                 send(respostaL);
  
                             }
                         } else {
                             System.out.println(myAgent.getLocalName()
-                                    + ": Desculpe, atualmente não ha taxis.");
+                                    + ": Desculpe, atualmente nï¿½o ha taxis.");
                             ACLMessage refuse = pedidosInProgress.get(
                                     msg.getConversationId()).createReply();
                             pedidosInProgress.remove(msg.getConversationId());
