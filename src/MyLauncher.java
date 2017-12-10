@@ -38,6 +38,7 @@ import repast.simphony.dataLoader.ContextBuilder;
 import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.engine.schedule.Schedule;
 import repast.simphony.engine.schedule.ScheduleParameters;
+import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.parameter.Parameters;
 import repast.simphony.random.RandomHelper;
 import repast.simphony.space.continuous.ContinuousSpace;
@@ -112,15 +113,16 @@ public class MyLauncher extends RepastSLauncher {
 
 		// Clean everything before the simulation ends
 		Schedule scheduler = new Schedule();
-		ScheduleParameters stop = ScheduleParameters
-				.createAtEnd(ScheduleParameters.END);
-		scheduler.schedule(stop, this, "endSimulation");
+		ScheduleParameters stop = ScheduleParameters.createAtEnd(ScheduleParameters.END);
+		scheduler.schedule(stop, this, "executeEndActions");
 
 		this.context = context;
-
+		
+		
 		return super.build(context);
 	}
-	public void endSimulation(){
+	@ScheduledMethod( start=1, interval=1,priority=ScheduleParameters.FIRST_PRIORITY )
+	public void executeEndActions(){
 		System.out.println("END OF SIMULATION");
 	}
 	

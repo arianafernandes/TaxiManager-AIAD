@@ -8,14 +8,14 @@
 		/>
 				
 				<parameter name="number_taxis" displayName="Taxis Count" type="int" 
-						defaultValue="1" 
+						defaultValue="40" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
 			
 				<parameter name="number_clients" displayName="Clients Count" type="int" 
-						defaultValue="2" 
+						defaultValue="20" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									

@@ -1,6 +1,7 @@
 package agents;
  
 import java.util.*;
+import java.util.Timer;
 
 import jade.core.*;
 import repast.simphony.space.continuous.ContinuousSpace;
@@ -13,18 +14,23 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
  
-@SuppressWarnings("serial")
+
 public class Central extends Agent { // taxis
  
     // total taxis from taxiManager
-    public int nTotalTaxis;
-    public Agent[] allAgents;
+	
+	ContinuousSpace<Object> space;
+    Grid<Object> grid;
     public TreeMap<Double, ACLMessage> allTaxis = new TreeMap<Double, ACLMessage>();
+    public LinkedList<Float> all = new LinkedList<Float>(); 
+    public LinkedList<Integer> allC = new LinkedList<Integer>(); 
+    public Agent[] allAgents;
+    public int nTotalTaxis;
     public double price;
     public double balance;
     public int checked_shared;
-    ContinuousSpace<Object> space;
-    Grid<Object> grid;
+    public int total_patiens;
+    
     public Central() {
     }
  
@@ -115,6 +121,7 @@ public class Central extends Agent { // taxis
                     String cap = parts[2];//
                     int nPessoasPedido = Integer.parseInt(nPessoas);
                     int capTaxi = Integer.parseInt(cap);
+                    
                     // variavel que garante que recebemos pedidos de TODOS os
                     // Taxis
                     // this.countTaxis++;
@@ -193,6 +200,7 @@ public class Central extends Agent { // taxis
  
                             setPrice((calcDist(xii, yii, xfi, yfi) * 1.59));
                             setBalance(getBalance() + getPrice());
+                            all.add((float) getBalance());
                             System.out.println("[=Price=]: "
                                     + String.format("%.2f", getPrice()));
                             System.out.println("[=Balance=]: "
@@ -279,6 +287,7 @@ public class Central extends Agent { // taxis
                 }
                 String[] parts = msg.getContent().split(",");
                 this.nPessoas = parts[0];
+                allC.add(Integer.parseInt(nPessoas));
                 String xi = parts[1];
                 String yi = parts[2];//
                 String xf = parts[3];
@@ -287,7 +296,8 @@ public class Central extends Agent { // taxis
                 int yfi = Integer.parseInt(yf);
                 int xii = Integer.parseInt(xi);
                 int yii = Integer.parseInt(yi);
- 
+                
+                
                 setPrice((calcDist(xii, yii, xfi, yfi) * 1.59));
  
                 System.out.println(myAgent.getLocalName() + ": O "
@@ -295,6 +305,7 @@ public class Central extends Agent { // taxis
                         + " quer um Taxi para " + nPessoas
                         + " pessoa(s). Taxis qual o vosso tempo para o sitio "
                         + xi + "-" + yi + "?");
+                total_patiens = total_patiens + Integer.parseInt(nPessoas);
                 System.out.println("A aguardar resposta dos taxis...");
 //              clientInform = msg.getSender();
                 pedido.setContent(msg.getSender().getLocalName() + "," + xi
@@ -336,5 +347,28 @@ public class Central extends Agent { // taxis
  
         CentralBehaviour b = new CentralBehaviour(this);
         addBehaviour(b);
+        
+        Timer timer = new Timer();
+        TimerTask myTask = new TimerTask() {
+            @Override
+            public void run() {
+                // whatever you need to do every 2 seconds
+            	System.out.println("");
+            	System.out.println("");
+            	System.out.println("###########################################################################");
+            	System.out.println("### ------------------------ RETRIEVED DATA --------------------------- ###");
+            	System.out.println("###########################################################################");
+            	System.out.println();
+            	System.out.println(all);
+            	System.out.println("TOTAL de ATENDIMENTOS: " + all.size());
+            	System.out.println("TOTAL PATIENS: " + total_patiens);
+            	System.out.println();
+            	System.out.println("--------------------------------------------------------------------------");
+            	
+            }
+        };
+
+        timer.schedule(myTask, 2400, 500000);
+        
     }
 }
